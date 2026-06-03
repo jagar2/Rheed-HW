@@ -271,22 +271,33 @@ begin
     begin
         -- Place your sequence of commands within the 'Simulation' process.
 
-        Ref_MementoEvent_gen(clk, status, ctrl, 0, x"AAAAAAAA");
-        Ref_PixelLut_Negative_on(clk, status, ctrl, 0);
-        EnableDataStream(clk, status, ctrl, 0);
-        FrameRequest(clk, status, ctrl, 0, 5, 256, 10, Mono8, FALSE);
+        -- Ref_MementoEvent_gen(clk, status, ctrl, 0, x"AAAAAAAA");
+        -- Ref_PixelLut_Negative_on(clk, status, ctrl, 0);
+        -- EnableDataStream(clk, status, ctrl, 0);
+        -- FrameRequest(clk, status, ctrl, 0, 5, 256, 10, Mono8, FALSE);
 
         -- To read image data from a file, change the absolute path here below to locate the file containing the data.
         -- In addition, Linux users must update the FILE_PATH_LENGTH constant in Simulation_FileIO_pkg.vhd
         -- to specify the length of the absolute path locating the image data file.
         -- FrameRequest         (clk,status,ctrl, 0, 5, 256, 10, Mono8, TRUE, FALSE, "C:/Documents/Image_Data.dat");
 
-        DisableDataStream(clk, status, ctrl, 0);
-        Ref_PixelLut_off(clk, status, ctrl, 0);
-        GlobalReset(clk, status, ctrl);
-        Ref_MementoEvent_gen(clk, status, ctrl, 0, x"BBBBBBBB");
+        -- DisableDataStream(clk, status, ctrl, 0);
+        -- Ref_PixelLut_off(clk, status, ctrl, 0);
+        -- GlobalReset(clk, status, ctrl);
+        -- Ref_MementoEvent_gen(clk, status, ctrl, 0, x"BBBBBBBB");
 
-        std.env.finish;
+        GlobalReset				(clk,status,ctrl);
+        EnableDataStream		(clk,status,ctrl, 0);
+
+        -- FrameRequest         (clk,status,ctrl, <channel>, <nb_frames>, <xsize>, <ysize>, <pixelf>, <read_file>, <big_endian>, <file_path>);
+        FrameRequest			(clk,status,ctrl, 0, 0, 320, 320, Mono8, TRUE, FALSE, "/home/pujan/Documents/Rheed-PP/04_ref_design/sim/PP_data_folo.dat");
+     
+
+        -- DisableDataStream		(clk,status,ctrl, 0);
+        -- GlobalReset				(clk,status,ctrl);
+
+        wait;
+        -- std.env.finish;
     end process;
 
 end behav;

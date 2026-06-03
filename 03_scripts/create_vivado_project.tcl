@@ -178,3 +178,5 @@ proc customlogicCreateProject {} {
 }
 
 customlogicCreateProject
+
+source [file normalize "[file dirname [file normalize [info script]]]/customlogic_functions.tcl"]
