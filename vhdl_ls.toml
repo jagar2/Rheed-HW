@@ -1,0 +1,4 @@
+[libraries]
+my_lib.files = [
+  '04_ref_design/**/*.vhd',
+]

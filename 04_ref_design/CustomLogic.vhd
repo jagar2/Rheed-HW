@@ -255,6 +255,9 @@ architecture behav of CustomLogic is
   signal res_rd_idx           : unsigned(RB_AWORD - 1 downto 0);
   signal res_rd_data          : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);
 
+  -- Debug
+  signal folo_out_cnt         : unsigned(31 downto 0)                            := (others => '0');
+
   ----------------------------------------------------------------------------
   -- Attributes (RAM inference hints)
   ----------------------------------------------------------------------------
@@ -349,8 +352,7 @@ begin
             end if;
 
           when C_ARM =>
-            -- wait for Start-of-Frame, then write it as word 0
-            if s_axis_tvalid = '1' and s_axis_tuser(0) = '1' then
+            if s_axis_tvalid = '1' and m_axis_tready = '1' and s_axis_tuser(0) = '1' then
               fb_wr_en                      <= '1';
               fb_wr_idx                     <= (others => '0');
               fb_wr_data                    <= s_axis_tdata;
@@ -359,9 +361,9 @@ begin
             end if;
 
           when C_WRITE =>
-            if s_axis_tvalid = '1' then
+            if s_axis_tvalid = '1' and m_axis_tready = '1' then
               if s_axis_tuser(0) = '1' then
-                -- unexpected SOF mid-frame: restart capture from this beat
+                -- unexpected SOF mid-frame: restart
                 fb_wr_en                    <= '1';
                 fb_wr_idx                   <= (others => '0');
                 fb_wr_data                  <= s_axis_tdata;
@@ -371,14 +373,11 @@ begin
                 fb_wr_idx                   <= cap_word_cnt;
                 fb_wr_data                  <= s_axis_tdata;
                 if cap_word_cnt = to_unsigned(WORDS_PER_FRAME - 1, cap_word_cnt'length) then
-                  -- last expected word: require EOF here, else drop
-                  if s_axis_tuser(3) = '1' then
-                    cap_commit              <= '1';
-                  end if;
+                  cap_commit                <= '1';
                   cap_word_cnt              <= (others => '0');
                   cap_state                 <= C_IDLE;
                 elsif s_axis_tuser(3) = '1' then
-                  -- premature EOF (short frame): drop, do not commit
+                  -- premature EOF: drop
                   cap_word_cnt              <= (others => '0');
                   cap_state                 <= C_IDLE;
                 else
@@ -576,12 +575,11 @@ begin
           pending_valid                     <= '1';
           pending_buf                       <= res_ready_buf;
         end if;
-
         -- advance on an output beat (passthrough never stalls the bus)
         if s_axis_tvalid = '1' and m_axis_tready = '1' then
           if s_axis_tuser(0) = '1' then
             ovl_idx                         <= to_unsigned(1, ovl_idx'length);
-            if res_ready_pulse = '1' then                                                                                          -- result completed this very cycle
+            if res_ready_pulse = '1' then
               ovl_rd_ptr                    <= res_ready_buf;
               ovl_armed                     <= '1';
               pending_valid                 <= '0';
@@ -592,6 +590,9 @@ begin
             end if;
           else
             ovl_idx                         <= ovl_idx + 1;
+            if ovl_idx = to_unsigned(OVERLAY_START + OVERLAY_WORDS - 1, ovl_idx'length) then
+              ovl_armed                     <= '0';
+            end if;
           end if;
         end if;
       end if;
@@ -665,5 +666,19 @@ begin
   m_memento_event                           <= '0';
   m_memento_arg0                            <= (others => '0');
   m_memento_arg1                            <= (others => '0');
+
+  ----------------------------------------------------------------------------
+  -- Debug
+  ----------------------------------------------------------------------------
+  pDebug: process (clk250) is
+  begin
+    if rising_edge(clk250) then
+      if s_axis_resetn = '0' then
+        folo_out_cnt                        <= (others => '0');
+      elsif folo_out_tvalid = '1' then
+        folo_out_cnt                        <= folo_out_cnt + 1;
+      end if;
+    end if;
+  end process pDebug;
 
 end architecture behav;
