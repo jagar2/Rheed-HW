@@ -12,15 +12,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="14,666,750.154 ns"></ZoomStartTime>
-      <ZoomEndTime time="14,666,963.570 ns"></ZoomEndTime>
-      <Cursor1Time time="14,666,928.000 ns"></Cursor1Time>
+      <ZoomStartTime time="99,591.200 ns"></ZoomStartTime>
+      <ZoomEndTime time="100,081.761 ns"></ZoomEndTime>
+      <Cursor1Time time="100,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="252"></NameColumnWidth>
-      <ValueColumnWidth column_width="107"></ValueColumnWidth>
+      <ValueColumnWidth column_width="95"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="15" />
    <wave_markers>
       <marker label="" time="636620000" />
       <marker label="" time="628628000" />
@@ -410,7 +410,6 @@
    <wvobject type="group" fp_name="group114">
       <obj_property name="label">S_AXIS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/tb_top/iCustomLogic/s_axis_resetn">
          <obj_property name="ElementShortName">s_axis_resetn</obj_property>
          <obj_property name="ObjectShortName">s_axis_resetn</obj_property>
@@ -431,30 +430,17 @@
       <wvobject type="array" fp_name="/tb_top/iCustomLogic/s_axis_tuser">
          <obj_property name="ElementShortName">s_axis_tuser[3:0]</obj_property>
          <obj_property name="ObjectShortName">s_axis_tuser[3:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
-   </wvobject>
-   <wvobject type="other" fp_name="/tb_top/iCustomLogic/feed_state">
-      <obj_property name="ElementShortName">feed_state</obj_property>
-      <obj_property name="ObjectShortName">feed_state</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb_top/iCustomLogic/cap_word_cnt">
-      <obj_property name="ElementShortName">cap_word_cnt[12:0]</obj_property>
-      <obj_property name="ObjectShortName">cap_word_cnt[12:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/cap_commit">
-      <obj_property name="ElementShortName">cap_commit</obj_property>
-      <obj_property name="ObjectShortName">cap_commit</obj_property>
-   </wvobject>
-   <wvobject type="other" fp_name="/tb_top/iCustomLogic/cap_state">
-      <obj_property name="ElementShortName">cap_state</obj_property>
-      <obj_property name="ObjectShortName">cap_state</obj_property>
    </wvobject>
    <wvobject type="group" fp_name="group116">
       <obj_property name="label">FOLO</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/tb_top/iCustomLogic/folo_in_cnt">
+         <obj_property name="ElementShortName">folo_in_cnt[31:0]</obj_property>
+         <obj_property name="ObjectShortName">folo_in_cnt[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
       <wvobject type="logic" fp_name="/tb_top/iCustomLogic/folo_in_tready">
          <obj_property name="ElementShortName">folo_in_tready</obj_property>
          <obj_property name="ObjectShortName">folo_in_tready</obj_property>
@@ -482,10 +468,45 @@
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
    </wvobject>
+   <wvobject type="group" fp_name="group245">
+      <obj_property name="label">GAUS</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/tb_top/iCustomLogic/gaus_in_cnt">
+         <obj_property name="ElementShortName">gaus_in_cnt[31:0]</obj_property>
+         <obj_property name="ObjectShortName">gaus_in_cnt[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_in_tready">
+         <obj_property name="ElementShortName">gaus_in_tready</obj_property>
+         <obj_property name="ObjectShortName">gaus_in_tready</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_in_tvalid">
+         <obj_property name="ElementShortName">gaus_in_tvalid</obj_property>
+         <obj_property name="ObjectShortName">gaus_in_tvalid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_top/iCustomLogic/gaus_in_tdata">
+         <obj_property name="ElementShortName">gaus_in_tdata[15:0]</obj_property>
+         <obj_property name="ObjectShortName">gaus_in_tdata[15:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_out_tvalid">
+         <obj_property name="ElementShortName">gaus_out_tvalid</obj_property>
+         <obj_property name="ObjectShortName">gaus_out_tvalid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_top/iCustomLogic/gaus_out_tdata">
+         <obj_property name="ElementShortName">gaus_out_tdata[111:0]</obj_property>
+         <obj_property name="ObjectShortName">gaus_out_tdata[111:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_top/iCustomLogic/gaus_out_cnt">
+         <obj_property name="ElementShortName">gaus_out_cnt[31:0]</obj_property>
+         <obj_property name="ObjectShortName">gaus_out_cnt[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+   </wvobject>
    <wvobject type="group" fp_name="group115">
       <obj_property name="label">M_AXIS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/tb_top/iCustomLogic/m_axis_tready">
          <obj_property name="ElementShortName">m_axis_tready</obj_property>
          <obj_property name="ObjectShortName">m_axis_tready</obj_property>
@@ -507,5 +528,37 @@
          <obj_property name="ElementShortName">m_axis_tuser[3:0]</obj_property>
          <obj_property name="ObjectShortName">m_axis_tuser[3:0]</obj_property>
       </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/ovl_armed">
+      <obj_property name="ElementShortName">ovl_armed</obj_property>
+      <obj_property name="ObjectShortName">ovl_armed</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_armed">
+      <obj_property name="ElementShortName">gaus_armed</obj_property>
+      <obj_property name="ObjectShortName">gaus_armed</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/pending_valid">
+      <obj_property name="ElementShortName">pending_valid</obj_property>
+      <obj_property name="ObjectShortName">pending_valid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_pending_valid">
+      <obj_property name="ElementShortName">gaus_pending_valid</obj_property>
+      <obj_property name="ObjectShortName">gaus_pending_valid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/res_ready_pulse">
+      <obj_property name="ElementShortName">res_ready_pulse</obj_property>
+      <obj_property name="ObjectShortName">res_ready_pulse</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_ready_pulse">
+      <obj_property name="ElementShortName">gaus_ready_pulse</obj_property>
+      <obj_property name="ObjectShortName">gaus_ready_pulse</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/overlay_sel">
+      <obj_property name="ElementShortName">overlay_sel</obj_property>
+      <obj_property name="ObjectShortName">overlay_sel</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_top/iCustomLogic/gaus_ovl_sel">
+      <obj_property name="ElementShortName">gaus_ovl_sel</obj_property>
+      <obj_property name="ObjectShortName">gaus_ovl_sel</obj_property>
    </wvobject>
 </wave_config>

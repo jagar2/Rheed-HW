@@ -1,0 +1,6 @@
+
+Family       : kintexu
+Device       : xcku035
+Package      : -fbva676
+Speed Grade  : -2-e
+Clock Period : 2
