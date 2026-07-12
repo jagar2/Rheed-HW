@@ -1,0 +1,2077 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
+| Date              : Sun Jul 12 07:14:41 2026
+| Host              : uw-acme running 64-bit Ubuntu 22.04.5 LTS
+| Command           : report_timing -max_paths 20 -file ./lp_perf_opt_explore.txt
+| Design            : CustomLogicTop
+| Device            : xcku035-fbva676
+| Speed File        : -2  PRODUCTION 1.25 12-04-2018
+| Temperature Grade : E
+-----------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -2.196ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[0]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.992ns  (logic 3.818ns (63.718%)  route 2.174ns (36.282%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.119ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.630ns = ( 6.630 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.301ns (routing 0.452ns, distribution 1.849ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.593    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.727 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.240     8.967    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X38Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.301     6.630    iCustomLogic/clk250
+    SLICE_X38Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[0]/C
+                         clock pessimism              0.226     6.856    
+                         clock uncertainty           -0.035     6.821    
+    SLICE_X38Y92         FDRE (Setup_HFF2_SLICEM_C_CE)
+                                                     -0.050     6.771    iCustomLogic/gaus_in_tdata_reg[0]
+  -------------------------------------------------------------------
+                         required time                          6.771    
+                         arrival time                          -8.967    
+  -------------------------------------------------------------------
+                         slack                                 -2.196    
+
+Slack (VIOLATED) :        -2.196ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[1]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.992ns  (logic 3.818ns (63.718%)  route 2.174ns (36.282%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.119ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.630ns = ( 6.630 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.301ns (routing 0.452ns, distribution 1.849ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.593    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.727 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.240     8.967    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X38Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[1]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.301     6.630    iCustomLogic/clk250
+    SLICE_X38Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[1]/C
+                         clock pessimism              0.226     6.856    
+                         clock uncertainty           -0.035     6.821    
+    SLICE_X38Y92         FDRE (Setup_EFF2_SLICEM_C_CE)
+                                                     -0.050     6.771    iCustomLogic/gaus_in_tdata_reg[1]
+  -------------------------------------------------------------------
+                         required time                          6.771    
+                         arrival time                          -8.967    
+  -------------------------------------------------------------------
+                         slack                                 -2.196    
+
+Slack (VIOLATED) :        -2.196ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[5]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.992ns  (logic 3.818ns (63.718%)  route 2.174ns (36.282%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.119ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.630ns = ( 6.630 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.301ns (routing 0.452ns, distribution 1.849ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.593    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.727 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.240     8.967    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X38Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.301     6.630    iCustomLogic/clk250
+    SLICE_X38Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[5]/C
+                         clock pessimism              0.226     6.856    
+                         clock uncertainty           -0.035     6.821    
+    SLICE_X38Y92         FDRE (Setup_GFF2_SLICEM_C_CE)
+                                                     -0.050     6.771    iCustomLogic/gaus_in_tdata_reg[5]
+  -------------------------------------------------------------------
+                         required time                          6.771    
+                         arrival time                          -8.967    
+  -------------------------------------------------------------------
+                         slack                                 -2.196    
+
+Slack (VIOLATED) :        -2.194ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[3]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.994ns  (logic 3.818ns (63.697%)  route 2.176ns (36.303%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.117ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.632ns = ( 6.632 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.303ns (routing 0.452ns, distribution 1.851ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.593    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.727 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.242     8.969    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X39Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[3]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.303     6.632    iCustomLogic/clk250
+    SLICE_X39Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[3]/C
+                         clock pessimism              0.226     6.858    
+                         clock uncertainty           -0.035     6.822    
+    SLICE_X39Y92         FDRE (Setup_BFF_SLICEL_C_CE)
+                                                     -0.047     6.775    iCustomLogic/gaus_in_tdata_reg[3]
+  -------------------------------------------------------------------
+                         required time                          6.775    
+                         arrival time                          -8.969    
+  -------------------------------------------------------------------
+                         slack                                 -2.194    
+
+Slack (VIOLATED) :        -2.194ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[6]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.994ns  (logic 3.818ns (63.697%)  route 2.176ns (36.303%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.117ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.632ns = ( 6.632 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.303ns (routing 0.452ns, distribution 1.851ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.593    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.727 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.242     8.969    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X39Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[6]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.303     6.632    iCustomLogic/clk250
+    SLICE_X39Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[6]/C
+                         clock pessimism              0.226     6.858    
+                         clock uncertainty           -0.035     6.822    
+    SLICE_X39Y92         FDRE (Setup_AFF_SLICEL_C_CE)
+                                                     -0.047     6.775    iCustomLogic/gaus_in_tdata_reg[6]
+  -------------------------------------------------------------------
+                         required time                          6.775    
+                         arrival time                          -8.969    
+  -------------------------------------------------------------------
+                         slack                                 -2.194    
+
+Slack (VIOLATED) :        -2.189ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_r_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[2]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.984ns  (logic 3.722ns (62.199%)  route 2.262ns (37.801%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.123ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.615ns = ( 6.615 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.964ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.567ns (routing 0.501ns, distribution 2.066ns)
+  Clock Net Delay (Destination): 2.286ns (routing 0.452ns, distribution 1.834ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.567     2.964    iCustomLogic/clk250
+    SLICE_X42Y92         FDRE                                         r  iCustomLogic/crop_r_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X42Y92         FDRE (Prop_EFF2_SLICEM_C_Q)
+                                                      0.116     3.080 r  iCustomLogic/crop_r_reg[3]/Q
+                         net (fo=4, routed)           0.152     3.232    iCustomLogic/crop_r_reg_n_0_[3]
+    SLICE_X42Y91         LUT2 (Prop_B6LUT_SLICEM_I1_O)
+                                                      0.136     3.368 r  iCustomLogic/w_i3_i_9/O
+                         net (fo=1, routed)           0.000     3.368    iCustomLogic/w_i3_i_9_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[1]_O[2])
+                                                      0.183     3.551 f  iCustomLogic/w_i3_i_3/O[2]
+                         net (fo=3, routed)           0.379     3.930    iCustomLogic/w_i3/A[4]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[4]_A2_DATA[4])
+                                                      0.337     4.267 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[4]
+                         net (fo=1, routed)           0.000     4.267    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<4>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[4]_A2A1[4])
+                                                      0.155     4.422 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[4]
+                         net (fo=1, routed)           0.000     4.422    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<4>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[4]_V[4])
+                                                      0.871     5.293 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/V[4]
+                         net (fo=1, routed)           0.000     5.293    iCustomLogic/w_i3/DSP_MULTIPLIER.V<4>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[4]_V_DATA[4])
+                                                      0.110     5.403 r  iCustomLogic/w_i3/DSP_M_DATA_INST/V_DATA[4]
+                         net (fo=1, routed)           0.000     5.403    iCustomLogic/w_i3/DSP_M_DATA.V_DATA<4>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[4]_ALU_OUT[4])
+                                                      0.687     6.090 r  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, routed)           0.000     6.090    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<4>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[4]_P[4])
+                                                      0.193     6.283 f  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[4]
+                         net (fo=4, routed)           0.322     6.605    iCustomLogic/w_i3_n_101
+    SLICE_X41Y92         LUT1 (Prop_E6LUT_SLICEL_I0_O)
+                                                      0.040     6.645 r  iCustomLogic/crop_rd_idx[3]_i_8/O
+                         net (fo=1, routed)           0.000     6.645    iCustomLogic/crop_rd_idx[3]_i_8_n_0
+    SLICE_X41Y92         CARRY8 (Prop_CARRY8_SLICEL_S[4]_O[7])
+                                                      0.286     6.931 f  iCustomLogic/crop_rd_idx_reg[3]_i_2/O[7]
+                         net (fo=4, routed)           0.341     7.272    iCustomLogic/w_i3__0[7]
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.040     7.312 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.571    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.760 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.913    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.045 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.185    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.225 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.361    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.434 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.592    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.726 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.222     8.948    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X40Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.286     6.615    iCustomLogic/clk250
+    SLICE_X40Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[2]/C
+                         clock pessimism              0.226     6.841    
+                         clock uncertainty           -0.035     6.806    
+    SLICE_X40Y92         FDRE (Setup_BFF_SLICEM_C_CE)
+                                                     -0.047     6.759    iCustomLogic/gaus_in_tdata_reg[2]
+  -------------------------------------------------------------------
+                         required time                          6.759    
+                         arrival time                          -8.948    
+  -------------------------------------------------------------------
+                         slack                                 -2.189    
+
+Slack (VIOLATED) :        -2.189ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_r_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[4]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.984ns  (logic 3.722ns (62.199%)  route 2.262ns (37.801%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.123ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.615ns = ( 6.615 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.964ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.567ns (routing 0.501ns, distribution 2.066ns)
+  Clock Net Delay (Destination): 2.286ns (routing 0.452ns, distribution 1.834ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.567     2.964    iCustomLogic/clk250
+    SLICE_X42Y92         FDRE                                         r  iCustomLogic/crop_r_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X42Y92         FDRE (Prop_EFF2_SLICEM_C_Q)
+                                                      0.116     3.080 r  iCustomLogic/crop_r_reg[3]/Q
+                         net (fo=4, routed)           0.152     3.232    iCustomLogic/crop_r_reg_n_0_[3]
+    SLICE_X42Y91         LUT2 (Prop_B6LUT_SLICEM_I1_O)
+                                                      0.136     3.368 r  iCustomLogic/w_i3_i_9/O
+                         net (fo=1, routed)           0.000     3.368    iCustomLogic/w_i3_i_9_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[1]_O[2])
+                                                      0.183     3.551 f  iCustomLogic/w_i3_i_3/O[2]
+                         net (fo=3, routed)           0.379     3.930    iCustomLogic/w_i3/A[4]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[4]_A2_DATA[4])
+                                                      0.337     4.267 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[4]
+                         net (fo=1, routed)           0.000     4.267    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<4>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[4]_A2A1[4])
+                                                      0.155     4.422 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[4]
+                         net (fo=1, routed)           0.000     4.422    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<4>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[4]_V[4])
+                                                      0.871     5.293 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/V[4]
+                         net (fo=1, routed)           0.000     5.293    iCustomLogic/w_i3/DSP_MULTIPLIER.V<4>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[4]_V_DATA[4])
+                                                      0.110     5.403 r  iCustomLogic/w_i3/DSP_M_DATA_INST/V_DATA[4]
+                         net (fo=1, routed)           0.000     5.403    iCustomLogic/w_i3/DSP_M_DATA.V_DATA<4>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[4]_ALU_OUT[4])
+                                                      0.687     6.090 r  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, routed)           0.000     6.090    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<4>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[4]_P[4])
+                                                      0.193     6.283 f  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[4]
+                         net (fo=4, routed)           0.322     6.605    iCustomLogic/w_i3_n_101
+    SLICE_X41Y92         LUT1 (Prop_E6LUT_SLICEL_I0_O)
+                                                      0.040     6.645 r  iCustomLogic/crop_rd_idx[3]_i_8/O
+                         net (fo=1, routed)           0.000     6.645    iCustomLogic/crop_rd_idx[3]_i_8_n_0
+    SLICE_X41Y92         CARRY8 (Prop_CARRY8_SLICEL_S[4]_O[7])
+                                                      0.286     6.931 f  iCustomLogic/crop_rd_idx_reg[3]_i_2/O[7]
+                         net (fo=4, routed)           0.341     7.272    iCustomLogic/w_i3__0[7]
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.040     7.312 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.571    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.760 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.913    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.045 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.185    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.225 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.361    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.434 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.592    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.726 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.222     8.948    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X40Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.286     6.615    iCustomLogic/clk250
+    SLICE_X40Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[4]/C
+                         clock pessimism              0.226     6.841    
+                         clock uncertainty           -0.035     6.806    
+    SLICE_X40Y92         FDRE (Setup_AFF_SLICEM_C_CE)
+                                                     -0.047     6.759    iCustomLogic/gaus_in_tdata_reg[4]
+  -------------------------------------------------------------------
+                         required time                          6.759    
+                         arrival time                          -8.948    
+  -------------------------------------------------------------------
+                         slack                                 -2.189    
+
+Slack (VIOLATED) :        -2.189ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_r_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/gaus_in_tdata_reg[7]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.984ns  (logic 3.722ns (62.199%)  route 2.262ns (37.801%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.123ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.615ns = ( 6.615 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.964ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.567ns (routing 0.501ns, distribution 2.066ns)
+  Clock Net Delay (Destination): 2.286ns (routing 0.452ns, distribution 1.834ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.567     2.964    iCustomLogic/clk250
+    SLICE_X42Y92         FDRE                                         r  iCustomLogic/crop_r_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X42Y92         FDRE (Prop_EFF2_SLICEM_C_Q)
+                                                      0.116     3.080 r  iCustomLogic/crop_r_reg[3]/Q
+                         net (fo=4, routed)           0.152     3.232    iCustomLogic/crop_r_reg_n_0_[3]
+    SLICE_X42Y91         LUT2 (Prop_B6LUT_SLICEM_I1_O)
+                                                      0.136     3.368 r  iCustomLogic/w_i3_i_9/O
+                         net (fo=1, routed)           0.000     3.368    iCustomLogic/w_i3_i_9_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[1]_O[2])
+                                                      0.183     3.551 f  iCustomLogic/w_i3_i_3/O[2]
+                         net (fo=3, routed)           0.379     3.930    iCustomLogic/w_i3/A[4]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[4]_A2_DATA[4])
+                                                      0.337     4.267 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[4]
+                         net (fo=1, routed)           0.000     4.267    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<4>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[4]_A2A1[4])
+                                                      0.155     4.422 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[4]
+                         net (fo=1, routed)           0.000     4.422    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<4>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[4]_V[4])
+                                                      0.871     5.293 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/V[4]
+                         net (fo=1, routed)           0.000     5.293    iCustomLogic/w_i3/DSP_MULTIPLIER.V<4>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[4]_V_DATA[4])
+                                                      0.110     5.403 r  iCustomLogic/w_i3/DSP_M_DATA_INST/V_DATA[4]
+                         net (fo=1, routed)           0.000     5.403    iCustomLogic/w_i3/DSP_M_DATA.V_DATA<4>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[4]_ALU_OUT[4])
+                                                      0.687     6.090 r  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, routed)           0.000     6.090    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<4>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[4]_P[4])
+                                                      0.193     6.283 f  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[4]
+                         net (fo=4, routed)           0.322     6.605    iCustomLogic/w_i3_n_101
+    SLICE_X41Y92         LUT1 (Prop_E6LUT_SLICEL_I0_O)
+                                                      0.040     6.645 r  iCustomLogic/crop_rd_idx[3]_i_8/O
+                         net (fo=1, routed)           0.000     6.645    iCustomLogic/crop_rd_idx[3]_i_8_n_0
+    SLICE_X41Y92         CARRY8 (Prop_CARRY8_SLICEL_S[4]_O[7])
+                                                      0.286     6.931 f  iCustomLogic/crop_rd_idx_reg[3]_i_2/O[7]
+                         net (fo=4, routed)           0.341     7.272    iCustomLogic/w_i3__0[7]
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.040     7.312 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.571    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.760 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.913    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.045 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.185    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.225 f  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.361    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.434 r  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.158     8.592    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y92         LUT6 (Prop_E6LUT_SLICEM_I3_O)
+                                                      0.134     8.726 r  iCustomLogic/gaus_in_tdata[7]_i_1/O
+                         net (fo=8, routed)           0.222     8.948    iCustomLogic/gaus_in_tdata[7]_i_1_n_0
+    SLICE_X40Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.286     6.615    iCustomLogic/clk250
+    SLICE_X40Y92         FDRE                                         r  iCustomLogic/gaus_in_tdata_reg[7]/C
+                         clock pessimism              0.226     6.841    
+                         clock uncertainty           -0.035     6.806    
+    SLICE_X40Y92         FDRE (Setup_DFF_SLICEM_C_CE)
+                                                     -0.047     6.759    iCustomLogic/gaus_in_tdata_reg[7]
+  -------------------------------------------------------------------
+                         required time                          6.759    
+                         arrival time                          -8.948    
+  -------------------------------------------------------------------
+                         slack                                 -2.189    
+
+Slack (VIOLATED) :        -2.161ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_r_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[4]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.966ns  (logic 3.628ns (60.811%)  route 2.338ns (39.189%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.113ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.625ns = ( 6.625 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.964ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.567ns (routing 0.501ns, distribution 2.066ns)
+  Clock Net Delay (Destination): 2.296ns (routing 0.452ns, distribution 1.844ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.567     2.964    iCustomLogic/clk250
+    SLICE_X42Y92         FDRE                                         r  iCustomLogic/crop_r_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X42Y92         FDRE (Prop_EFF2_SLICEM_C_Q)
+                                                      0.116     3.080 r  iCustomLogic/crop_r_reg[3]/Q
+                         net (fo=4, routed)           0.152     3.232    iCustomLogic/crop_r_reg_n_0_[3]
+    SLICE_X42Y91         LUT2 (Prop_B6LUT_SLICEM_I1_O)
+                                                      0.136     3.368 r  iCustomLogic/w_i3_i_9/O
+                         net (fo=1, routed)           0.000     3.368    iCustomLogic/w_i3_i_9_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[1]_O[2])
+                                                      0.183     3.551 f  iCustomLogic/w_i3_i_3/O[2]
+                         net (fo=3, routed)           0.379     3.930    iCustomLogic/w_i3/A[4]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[4]_A2_DATA[4])
+                                                      0.337     4.267 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[4]
+                         net (fo=1, routed)           0.000     4.267    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<4>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[4]_A2A1[4])
+                                                      0.155     4.422 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[4]
+                         net (fo=1, routed)           0.000     4.422    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<4>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[4]_V[4])
+                                                      0.871     5.293 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/V[4]
+                         net (fo=1, routed)           0.000     5.293    iCustomLogic/w_i3/DSP_MULTIPLIER.V<4>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[4]_V_DATA[4])
+                                                      0.110     5.403 r  iCustomLogic/w_i3/DSP_M_DATA_INST/V_DATA[4]
+                         net (fo=1, routed)           0.000     5.403    iCustomLogic/w_i3/DSP_M_DATA.V_DATA<4>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[4]_ALU_OUT[4])
+                                                      0.687     6.090 r  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[4]
+                         net (fo=1, routed)           0.000     6.090    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<4>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[4]_P[4])
+                                                      0.193     6.283 f  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[4]
+                         net (fo=4, routed)           0.322     6.605    iCustomLogic/w_i3_n_101
+    SLICE_X41Y92         LUT1 (Prop_E6LUT_SLICEL_I0_O)
+                                                      0.040     6.645 r  iCustomLogic/crop_rd_idx[3]_i_8/O
+                         net (fo=1, routed)           0.000     6.645    iCustomLogic/crop_rd_idx[3]_i_8_n_0
+    SLICE_X41Y92         CARRY8 (Prop_CARRY8_SLICEL_S[4]_O[7])
+                                                      0.286     6.931 f  iCustomLogic/crop_rd_idx_reg[3]_i_2/O[7]
+                         net (fo=4, routed)           0.341     7.272    iCustomLogic/w_i3__0[7]
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.040     7.312 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.571    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.760 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.913    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.045 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.185    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.225 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.361    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.434 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.593    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.633 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.297     8.930    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X41Y96         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.296     6.625    iCustomLogic/clk250
+    SLICE_X41Y96         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[4]/C
+                         clock pessimism              0.226     6.851    
+                         clock uncertainty           -0.035     6.816    
+    SLICE_X41Y96         FDRE (Setup_EFF_SLICEL_C_CE)
+                                                     -0.047     6.769    iCustomLogic/crop_rd_idx_reg[4]
+  -------------------------------------------------------------------
+                         required time                          6.769    
+                         arrival time                          -8.930    
+  -------------------------------------------------------------------
+                         slack                                 -2.161    
+
+Slack (VIOLATED) :        -2.115ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[0]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.914ns  (logic 3.724ns (62.969%)  route 2.190ns (37.031%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.255     8.889    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[0]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_GFF2_SLICEL_C_CE)
+                                                     -0.050     6.774    iCustomLogic/crop_rd_idx_reg[0]
+  -------------------------------------------------------------------
+                         required time                          6.774    
+                         arrival time                          -8.889    
+  -------------------------------------------------------------------
+                         slack                                 -2.115    
+
+Slack (VIOLATED) :        -2.115ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[1]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.914ns  (logic 3.724ns (62.969%)  route 2.190ns (37.031%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.255     8.889    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[1]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[1]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_FFF2_SLICEL_C_CE)
+                                                     -0.050     6.774    iCustomLogic/crop_rd_idx_reg[1]
+  -------------------------------------------------------------------
+                         required time                          6.774    
+                         arrival time                          -8.889    
+  -------------------------------------------------------------------
+                         slack                                 -2.115    
+
+Slack (VIOLATED) :        -2.115ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[5]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.914ns  (logic 3.724ns (62.969%)  route 2.190ns (37.031%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.255     8.889    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[5]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_HFF2_SLICEL_C_CE)
+                                                     -0.050     6.774    iCustomLogic/crop_rd_idx_reg[5]
+  -------------------------------------------------------------------
+                         required time                          6.774    
+                         arrival time                          -8.889    
+  -------------------------------------------------------------------
+                         slack                                 -2.115    
+
+Slack (VIOLATED) :        -2.115ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[7]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.914ns  (logic 3.724ns (62.969%)  route 2.190ns (37.031%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.255     8.889    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[7]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_EFF2_SLICEL_C_CE)
+                                                     -0.050     6.774    iCustomLogic/crop_rd_idx_reg[7]
+  -------------------------------------------------------------------
+                         required time                          6.774    
+                         arrival time                          -8.889    
+  -------------------------------------------------------------------
+                         slack                                 -2.115    
+
+Slack (VIOLATED) :        -2.109ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[10]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.921ns  (logic 3.724ns (62.895%)  route 2.197ns (37.105%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.104ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.645ns = ( 6.645 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.316ns (routing 0.452ns, distribution 1.864ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.262     8.896    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[10]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.316     6.645    iCustomLogic/clk250
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[10]/C
+                         clock pessimism              0.226     6.871    
+                         clock uncertainty           -0.035     6.835    
+    SLICE_X37Y95         FDRE (Setup_BFF2_SLICEL_C_CE)
+                                                     -0.048     6.787    iCustomLogic/crop_rd_idx_reg[10]
+  -------------------------------------------------------------------
+                         required time                          6.787    
+                         arrival time                          -8.896    
+  -------------------------------------------------------------------
+                         slack                                 -2.109    
+
+Slack (VIOLATED) :        -2.109ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[3]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.921ns  (logic 3.724ns (62.895%)  route 2.197ns (37.105%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.104ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.645ns = ( 6.645 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.316ns (routing 0.452ns, distribution 1.864ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.262     8.896    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[3]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.316     6.645    iCustomLogic/clk250
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[3]/C
+                         clock pessimism              0.226     6.871    
+                         clock uncertainty           -0.035     6.835    
+    SLICE_X37Y95         FDRE (Setup_DFF2_SLICEL_C_CE)
+                                                     -0.048     6.787    iCustomLogic/crop_rd_idx_reg[3]
+  -------------------------------------------------------------------
+                         required time                          6.787    
+                         arrival time                          -8.896    
+  -------------------------------------------------------------------
+                         slack                                 -2.109    
+
+Slack (VIOLATED) :        -2.109ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[6]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.921ns  (logic 3.724ns (62.895%)  route 2.197ns (37.105%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.104ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.645ns = ( 6.645 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.316ns (routing 0.452ns, distribution 1.864ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.262     8.896    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[6]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.316     6.645    iCustomLogic/clk250
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[6]/C
+                         clock pessimism              0.226     6.871    
+                         clock uncertainty           -0.035     6.835    
+    SLICE_X37Y95         FDRE (Setup_CFF2_SLICEL_C_CE)
+                                                     -0.048     6.787    iCustomLogic/crop_rd_idx_reg[6]
+  -------------------------------------------------------------------
+                         required time                          6.787    
+                         arrival time                          -8.896    
+  -------------------------------------------------------------------
+                         slack                                 -2.109    
+
+Slack (VIOLATED) :        -2.109ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[9]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.921ns  (logic 3.724ns (62.895%)  route 2.197ns (37.105%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.104ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.645ns = ( 6.645 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.316ns (routing 0.452ns, distribution 1.864ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.262     8.896    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[9]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.316     6.645    iCustomLogic/clk250
+    SLICE_X37Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[9]/C
+                         clock pessimism              0.226     6.871    
+                         clock uncertainty           -0.035     6.835    
+    SLICE_X37Y95         FDRE (Setup_AFF2_SLICEL_C_CE)
+                                                     -0.048     6.787    iCustomLogic/crop_rd_idx_reg[9]
+  -------------------------------------------------------------------
+                         required time                          6.787    
+                         arrival time                          -8.896    
+  -------------------------------------------------------------------
+                         slack                                 -2.109    
+
+Slack (VIOLATED) :        -2.108ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[11]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.910ns  (logic 3.724ns (63.012%)  route 2.186ns (36.988%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.251     8.885    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[11]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[11]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_FFF_SLICEL_C_CE)
+                                                     -0.047     6.777    iCustomLogic/crop_rd_idx_reg[11]
+  -------------------------------------------------------------------
+                         required time                          6.777    
+                         arrival time                          -8.885    
+  -------------------------------------------------------------------
+                         slack                                 -2.108    
+
+Slack (VIOLATED) :        -2.108ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[12]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.910ns  (logic 3.724ns (63.012%)  route 2.186ns (36.988%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.251     8.885    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[12]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[12]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_GFF_SLICEL_C_CE)
+                                                     -0.047     6.777    iCustomLogic/crop_rd_idx_reg[12]
+  -------------------------------------------------------------------
+                         required time                          6.777    
+                         arrival time                          -8.885    
+  -------------------------------------------------------------------
+                         slack                                 -2.108    
+
+Slack (VIOLATED) :        -2.108ns  (required time - arrival time)
+  Source:                 iCustomLogic/crop_y0_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Destination:            iCustomLogic/crop_rd_idx_reg[2]/CE
+                            (rising edge-triggered cell FDRE clocked by clk250  {rise@0.000ns fall@2.000ns period=4.000ns})
+  Path Group:             clk250
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.000ns  (clk250 rise@4.000ns - clk250 rise@0.000ns)
+  Data Path Delay:        5.910ns  (logic 3.724ns (63.012%)  route 2.186ns (36.988%))
+  Logic Levels:           16  (CARRY8=2 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT2=1 LUT3=1 LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.115ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.634ns = ( 6.634 - 4.000 ) 
+    Source Clock Delay      (SCD):    2.975ns
+    Clock Pessimism Removal (CPR):    0.226ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+  Clock Net Delay (Source):      2.578ns (routing 0.501ns, distribution 2.077ns)
+  Clock Net Delay (Destination): 2.305ns (routing 0.452ns, distribution 1.853ns)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock clk250 rise edge)     0.000     0.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     0.000 r  <hidden>
+                         net (fo=5, routed)           0.082     0.082    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.315     0.397 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.578     2.975    iCustomLogic/clk250
+    SLICE_X41Y91         FDRE                                         r  iCustomLogic/crop_y0_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y91         FDRE (Prop_HFF_SLICEL_C_Q)
+                                                      0.114     3.089 r  iCustomLogic/crop_y0_reg[4]/Q
+                         net (fo=2, routed)           0.169     3.258    iCustomLogic/crop_y0_reg_n_0_[4]
+    SLICE_X42Y91         LUT2 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.176     3.434 r  iCustomLogic/w_i3_i_8/O
+                         net (fo=1, routed)           0.000     3.434    iCustomLogic/w_i3_i_8_n_0
+    SLICE_X42Y91         CARRY8 (Prop_CARRY8_SLICEM_S[2]_CO[7])
+                                                      0.344     3.778 r  iCustomLogic/w_i3_i_3/CO[7]
+                         net (fo=1, routed)           0.027     3.805    iCustomLogic/w_i3_i_3_n_0
+    SLICE_X42Y92         CARRY8 (Prop_CARRY8_SLICEM_CI_CO[2])
+                                                      0.095     3.900 r  iCustomLogic/w_i3_i_2/CO[2]
+                         net (fo=7, routed)           0.244     4.144    iCustomLogic/w_i3_i_2_n_5
+    SLICE_X43Y92         LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.043     4.187 f  iCustomLogic/w_i3_i_1/O
+                         net (fo=18, routed)          0.313     4.500    iCustomLogic/w_i3/A[21]
+    DSP48E2_X6Y36        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[21]_A2_DATA[21])
+                                                      0.337     4.837 r  iCustomLogic/w_i3/DSP_A_B_DATA_INST/A2_DATA[21]
+                         net (fo=1, routed)           0.000     4.837    iCustomLogic/w_i3/DSP_A_B_DATA.A2_DATA<21>
+    DSP48E2_X6Y36        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[21]_A2A1[21])
+                                                      0.155     4.992 r  iCustomLogic/w_i3/DSP_PREADD_DATA_INST/A2A1[21]
+                         net (fo=1, routed)           0.000     4.992    iCustomLogic/w_i3/DSP_PREADD_DATA.A2A1<21>
+    DSP48E2_X6Y36        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[21]_U[31])
+                                                      0.866     5.858 f  iCustomLogic/w_i3/DSP_MULTIPLIER_INST/U[31]
+                         net (fo=1, routed)           0.000     5.858    iCustomLogic/w_i3/DSP_MULTIPLIER.U<31>
+    DSP48E2_X6Y36        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[31]_U_DATA[31])
+                                                      0.110     5.968 r  iCustomLogic/w_i3/DSP_M_DATA_INST/U_DATA[31]
+                         net (fo=1, routed)           0.000     5.968    iCustomLogic/w_i3/DSP_M_DATA.U_DATA<31>
+    DSP48E2_X6Y36        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[31]_ALU_OUT[31])
+                                                      0.702     6.670 f  iCustomLogic/w_i3/DSP_ALU_INST/ALU_OUT[31]
+                         net (fo=1, routed)           0.000     6.670    iCustomLogic/w_i3/DSP_ALU.ALU_OUT<31>
+    DSP48E2_X6Y36        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[31]_P[31])
+                                                      0.193     6.863 r  iCustomLogic/w_i3/DSP_OUTPUT_INST/P[31]
+                         net (fo=42, routed)          0.335     7.198    iCustomLogic/w_i3_n_74
+    SLICE_X42Y94         LUT3 (Prop_C6LUT_SLICEM_I1_O)
+                                                      0.115     7.313 f  iCustomLogic/crop_rd_idx[7]_i_4/O
+                         net (fo=4, routed)           0.259     7.572    iCustomLogic/crop_rd_idx[7]_i_4_n_0
+    SLICE_X41Y94         LUT5 (Prop_G6LUT_SLICEL_I3_O)
+                                                      0.189     7.761 r  iCustomLogic/crop_rd_idx[6]_i_2/O
+                         net (fo=3, routed)           0.153     7.914    iCustomLogic/crop_rd_idx[6]_i_2_n_0
+    SLICE_X40Y94         LUT6 (Prop_A6LUT_SLICEM_I3_O)
+                                                      0.132     8.046 r  iCustomLogic/crop_rd_idx[8]_i_2/O
+                         net (fo=2, routed)           0.140     8.186    iCustomLogic/crop_rd_idx[8]_i_2_n_0
+    SLICE_X40Y92         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.226 r  iCustomLogic/crop_state[2]_i_10/O
+                         net (fo=2, routed)           0.136     8.362    iCustomLogic/crop_state[2]_i_10_n_0
+    SLICE_X40Y93         LUT6 (Prop_H6LUT_SLICEM_I5_O)
+                                                      0.073     8.435 f  iCustomLogic/crop_state[2]_i_6/O
+                         net (fo=4, routed)           0.159     8.594    iCustomLogic/crop_state[2]_i_6_n_0
+    SLICE_X40Y95         LUT6 (Prop_G6LUT_SLICEM_I3_O)
+                                                      0.040     8.634 r  iCustomLogic/crop_rd_idx[12]_i_1/O
+                         net (fo=13, routed)          0.251     8.885    iCustomLogic/crop_rd_idx[12]_i_1_n_0
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock clk250 rise edge)     4.000     4.000 r  
+    GTHE3_CHANNEL_X0Y7   GTHE3_CHANNEL                0.000     4.000 r  <hidden>
+                         net (fo=5, routed)           0.046     4.046    <hidden>
+    BUFG_GT_X0Y47        BUFG_GT (Prop_BUFG_GT_I_O)
+                                                      0.283     4.329 r  <hidden>
+    X3Y2 (CLOCK_ROOT)    net (fo=135861, routed)      2.305     6.634    iCustomLogic/clk250
+    SLICE_X39Y95         FDRE                                         r  iCustomLogic/crop_rd_idx_reg[2]/C
+                         clock pessimism              0.226     6.860    
+                         clock uncertainty           -0.035     6.824    
+    SLICE_X39Y95         FDRE (Setup_EFF_SLICEL_C_CE)
+                                                     -0.047     6.777    iCustomLogic/crop_rd_idx_reg[2]
+  -------------------------------------------------------------------
+                         required time                          6.777    
+                         arrival time                          -8.885    
+  -------------------------------------------------------------------
+                         slack                                 -2.108    
+
+
+
+
