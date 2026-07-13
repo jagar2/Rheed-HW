@@ -209,8 +209,10 @@ architecture behav of CustomLogic is
   type res_buf_t is array (0 to OVERLAY_WORDS - 1) of std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);
 
   type cap_state_t is (C_IDLE, C_ARM, C_WRITE);
-  type feed_state_t is (F_IDLE, F_WAIT, F_LOAD, F_RUN);
-  type crop_state_t is (XC_IDLE, XC_PREP, XC_FET1, XC_FET2, XC_DRIVE, XC_DONE);
+  --type feed_state_t is (F_IDLE, F_WAIT, F_LOAD, F_RUN);
+  type feed_state_t is (F_IDLE, F_WAIT, F_WAIT2, F_LOAD, F_RUN);
+  --type crop_state_t is (XC_IDLE, XC_PREP, XC_PIPE, XC_FET1, XC_FET2, XC_DRIVE, XC_DONE);
+  type crop_state_t is (XC_IDLE, XC_PREP1, XC_PREP1B, XC_PREP2, XC_PIPE, XC_FET1, XC_FET2, XC_FET3, XC_DRIVE, XC_DONE);
 
   -- 3-deep frame ring : a buffer walks EMPTY -> FILLED (FOLO domain) ->
   -- DETECTED (crop domain) -> EMPTY. Distinct cursors own each stage so the
@@ -365,7 +367,26 @@ architecture behav of CustomLogic is
   signal cw                   : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
   signal cw_idx               : unsigned(FB_AWORD - 1 downto 0)                  := (others => '0');
   signal cw_valid             : std_logic                                        := '0';
+  -- for the pipelined stage maintaining the requests from memory
+  signal req_word             : unsigned(FB_AWORD-1 downto 0)                    := (others => '0');
+  signal req_byte             : natural range 0 to WORDS_PER_STREAM-1            := 0;
+  signal req_inb              : std_logic                                        := '0';
+  signal req_fetch            : std_logic                                        := '0';
+  signal w_i_reg              : unsigned(FB_AWORD - 1 downto 0)                  := (others => '0');
+  signal b_i_reg              : natural range 0 to WORDS_PER_STREAM - 1          := 0;
+  signal inb_reg              : std_logic                                        := '0';
+  signal px_i_reg             : natural range 0 to WORDS_PER_STREAM - 1          := 0;
+  signal w_mult_reg : unsigned(15 downto 0) := (others => '0');  -- py_i * 20, pre-add
+  
+  -- frame buffer
+  signal fb_folo_rd_data_r    : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
+  signal fb_crop_rd_data_r    : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
 
+  -- Gaussian input buffer
+  signal gaus_in_post_buf_tdata        : std_logic_vector(GAUS_IN_WIDTH - 1 downto 0)     := (others => '0');
+  signal gaus_in_post_buf_tvalid       : std_logic                                        := '0';
+  signal gaus_in_post_buf_tready       : std_logic                                        := '0';
+  
   -- Gaussian handshake
   signal gaus_in_tdata        : std_logic_vector(GAUS_IN_WIDTH - 1 downto 0)     := (others => '0');
   signal gaus_in_tvalid       : std_logic                                        := '0';
@@ -416,6 +437,12 @@ architecture behav of CustomLogic is
   attribute ram_style of frame_buf2 : signal is "block";
   attribute ram_style of res_buf0 : signal is "distributed";
   attribute ram_style of res_buf1 : signal is "distributed";
+  
+  -- Attributes for pipeline stage crop
+  attribute keep      : string;
+  attribute dont_touch : string;
+  attribute keep of w_mult_reg : signal is "true";
+  attribute dont_touch of w_mult_reg : signal is "true";
 
 begin
 
@@ -563,6 +590,26 @@ begin
     end if;
   end process pCapture;
 
+
+----------------------------------------------------------------------------
+-- Read-data pipeline register : breaks the BRAM cascade (rd_data0/1/2 mux)
+--   from the consuming logic (cur_word/folo_in_tdata build, cw capture) so
+--   each half only has to beat the clock on its own. Costs FOLO feed and
+--   crop fetch one extra cycle of latency per word fetched.
+----------------------------------------------------------------------------
+  pRdDataReg: process (clk250) is
+  begin
+    if rising_edge(clk250) then
+      if s_axis_resetn = '0' then
+        fb_folo_rd_data_r <= (others => '0');
+        fb_crop_rd_data_r <= (others => '0');
+      else
+        fb_folo_rd_data_r <= fb_folo_rd_data;
+        fb_crop_rd_data_r <= fb_crop_rd_data;
+      end if;
+    end if;
+  end process pRdDataReg;
+
   ----------------------------------------------------------------------------
   -- FOLO feed engine : reads buf folo_ptr, sequentializes 128b -> 16x 8b pixels
   --   at 1 px/cycle, honoring FOLO back-pressure (folo_in_tready) losslessly.
@@ -570,7 +617,7 @@ begin
   --   folo_rd_idx is combinational; F_WAIT burns one cycle for read latency.
   ----------------------------------------------------------------------------
   folo_rd_idx                                       <= feed_word_idx;
-
+  
   pFeed: process (clk250) is
   begin
     if rising_edge(clk250) then
@@ -594,16 +641,31 @@ begin
               feed_state                            <= F_WAIT;
             end if;
 
-          when F_WAIT =>
-            folo_in_tvalid                          <= '0';
-            feed_state                              <= F_LOAD;
+--          when F_WAIT =>
+--            folo_in_tvalid                          <= '0';
+--            feed_state                              <= F_LOAD;
 
-          when F_LOAD =>
-            cur_word                                <= fb_folo_rd_data;
-            folo_in_tdata                           <= std_logic_vector(resize(unsigned(fb_folo_rd_data(BITS_PER_PIXEL - 1 downto 0)), FOLO_OUT_WIDTH));
-            folo_in_tvalid                          <= '1';
-            feed_pix_cnt                            <= to_unsigned(WORDS_PER_STREAM - 1, feed_pix_cnt'length);                     -- 15 remaining
-            feed_state                              <= F_RUN;
+--          when F_LOAD =>
+--            cur_word                                <= fb_folo_rd_data;
+--            folo_in_tdata                           <= std_logic_vector(resize(unsigned(fb_folo_rd_data(BITS_PER_PIXEL - 1 downto 0)), FOLO_OUT_WIDTH));
+--            folo_in_tvalid                          <= '1';
+--            feed_pix_cnt                            <= to_unsigned(WORDS_PER_STREAM - 1, feed_pix_cnt'length);                     -- 15 remaining
+--            feed_state                              <= F_RUN;
+
+            when F_WAIT =>
+              folo_in_tvalid <= '0';
+              feed_state     <= F_WAIT2;          -- was: F_LOAD
+            
+            when F_WAIT2 =>
+              folo_in_tvalid <= '0';
+              feed_state     <= F_LOAD;
+            
+            when F_LOAD =>
+              cur_word       <= fb_folo_rd_data_r;                                                                     -- was fb_folo_rd_data
+              folo_in_tdata  <= std_logic_vector(resize(unsigned(fb_folo_rd_data_r(BITS_PER_PIXEL - 1 downto 0)), FOLO_OUT_WIDTH));
+              folo_in_tvalid <= '1';
+              feed_pix_cnt   <= to_unsigned(WORDS_PER_STREAM - 1, feed_pix_cnt'length);
+              feed_state     <= F_RUN;
 
           when F_RUN =>
             if folo_in_tready = '1' then
@@ -827,8 +889,8 @@ begin
     variable px_i             : integer;
     variable py_i             : integer;
     variable lin_i            : integer;
-    variable w_i              : integer;
-    variable b_i              : integer;
+    --variable w_i              : integer;
+    --variable b_i              : integer;
     variable inb              : boolean;
     variable cwd              : unsigned(STREAM_DATA_WIDTH - 1 downto 0);
     variable pix8             : std_logic_vector(BITS_PER_PIXEL - 1 downto 0);
@@ -848,9 +910,13 @@ begin
         gaus_in_tvalid                              <= '0';
         gaus_in_tdata                               <= (others => '0');
         crop_done                                   <= '0';
+        req_word                                    <= (others => '0');
+        req_byte                                    <= 0;
+        req_inb                                     <= '0';
       else
-        crop_done                                   <= '0';                                                                        -- default
-
+        crop_done                                   <= '0';                                                                        -- default  
+        crop_rd_idx                                 <= req_word;
+        
         case crop_state is
 
           when XC_IDLE =>
@@ -862,32 +928,79 @@ begin
               cw_valid                              <= '0';
               crop_x0                               <= to_signed(to_integer(buf_coords(to_integer(crop_ptr))(0).cx) * CELL_SIZE + BOX_ORIGIN_OFFS, crop_x0'length);
               crop_y0                               <= to_signed(to_integer(buf_coords(to_integer(crop_ptr))(0).cy) * CELL_SIZE + BOX_ORIGIN_OFFS, crop_y0'length);
-              crop_state                            <= XC_PREP;
+              crop_state                            <= XC_PREP1;
             end if;
 
-          when XC_PREP =>
-            -- pixel coordinate for the current (col,row) within the box
-            px_i                                    := to_integer(crop_x0) + to_integer(crop_c);
-            py_i                                    := to_integer(crop_y0) + to_integer(crop_r);
-            inb                                     := (px_i >= 0) and (px_i <= IMG_DIM - 1) and (py_i >= 0) and (py_i <= IMG_DIM - 1);
-            if inb then
-              lin_i                                 := py_i * IMG_DIM + px_i;
-              w_i                                   := lin_i / WORDS_PER_STREAM;
-              b_i                                   := lin_i mod WORDS_PER_STREAM;
-            else
-              w_i                                   := 0;
-              b_i                                   := 0;
-            end if;
+--          when XC_PREP =>
+--            -- pixel coordinate for the current (col,row) within the box
+--            px_i                                    := to_integer(crop_x0) + to_integer(crop_c);
+--            py_i                                    := to_integer(crop_y0) + to_integer(crop_r);
+--            inb                                     := (px_i >= 0) and (px_i <= IMG_DIM - 1) and (py_i >= 0) and (py_i <= IMG_DIM - 1);
+--            req_fetch                               <= '0';
+--            if inb then
+--              --lin_i                                 := py_i * IMG_DIM + px_i;
+--              --w_i                                   := lin_i / WORDS_PER_STREAM;
+--              --b_i                                   := lin_i mod WORDS_PER_STREAM;
+--              -- this requires IMG_DIM / WORDS_PER_STREAM to be a whole number:
+--              w_i                                   := py_i * (IMG_DIM / WORDS_PER_STREAM) + (px_i / WORDS_PER_STREAM);
+--              b_i                                   := px_i mod WORDS_PER_STREAM;
+--              req_word                              <= to_unsigned(w_i, FB_AWORD);
+--              req_byte                              <= b_i;
+--              req_inb                               <= '1';
+--              if (cw_valid = '0') or (to_unsigned(w_i, FB_AWORD) /= cw_idx) then
+--                req_fetch                           <= '1';
+--              end if;
+--            else
+--              w_i                                   := 0;
+--              b_i                                   := 0;
+--              req_inb                               <= '0';
+--            end if;
+            
+--            gaus_in_tvalid <= '0';
+--            crop_state <= XC_PIPE;
+          when XC_PREP1 =>
+              px_i := to_integer(crop_x0) + to_integer(crop_c);
+              py_i := to_integer(crop_y0) + to_integer(crop_r);
+              inb  := (px_i >= 0) and (px_i <= IMG_DIM - 1) and (py_i >= 0) and (py_i <= IMG_DIM - 1);
 
-            if inb and ((cw_valid = '0') or (to_unsigned(w_i, FB_AWORD) /= cw_idx)) then
+              w_mult_reg <= to_unsigned(py_i * (IMG_DIM / WORDS_PER_STREAM), 16);  -- multiply only
+              b_i_reg    <= px_i mod WORDS_PER_STREAM;
+              px_i_reg   <= px_i;
+              if inb then
+                inb_reg    <= '1';
+              else 
+                inb_reg    <= '0';
+              end if;
+              crop_state <= XC_PREP1B;              -- new state
+          
+          when XC_PREP1B =>
+              w_i_reg <= resize(w_mult_reg + to_unsigned(px_i_reg / WORDS_PER_STREAM, FB_AWORD), FB_AWORD);
+              crop_state <= XC_PREP2;
+              
+          when XC_PREP2 =>
+              req_word  <= w_i_reg;
+              req_byte  <= b_i_reg;
+              req_inb   <= inb_reg;
+              if inb_reg = '1' and ((cw_valid = '0') or (w_i_reg /= cw_idx)) then
+                req_fetch <= '1';
+              else
+                req_fetch <= '0';
+              end if;
+              crop_state <= XC_PIPE;
+            
+          when XC_PIPE =>
+            --if inb and ((cw_valid = '0') or (to_unsigned(w_i, FB_AWORD) /= cw_idx)) then
+            --crop_rd_idx                           <= req_word;
+            --if (req_inb = '1') and ((cw_valid = '0') or (req_word /= cw_idx)) then
+            if (req_fetch = '1') then
               -- need a different frame word: issue read, wait out the latency
-              crop_rd_idx                           <= to_unsigned(w_i, FB_AWORD);
+              --crop_rd_idx                           <= req_word;
               gaus_in_tvalid                        <= '0';
               crop_state                            <= XC_FET1;
             else
               -- data available (cache hit, or OOB -> zero) : present the pixel
-              if inb then
-                cwd                                 := shift_right(unsigned(cw), b_i * BITS_PER_PIXEL);
+              if (req_inb = '1') then
+                cwd                                 := shift_right(unsigned(cw), req_byte * BITS_PER_PIXEL);
                 pix8                                := std_logic_vector(cwd(BITS_PER_PIXEL - 1 downto 0));
               else
                 pix8                                := (others => '0');
@@ -895,19 +1008,35 @@ begin
               gaus_in_tdata                         <= std_logic_vector(resize(unsigned(pix8), GAUS_IN_WIDTH));
               gaus_in_tvalid                        <= '1';
               crop_state                            <= XC_DRIVE;
-            end if;
+            end if; 
 
+--          when XC_FET1 =>
+--            -- crop_rd_idx applied this cycle; registered BRAM latches at edge
+--            gaus_in_tvalid                          <= '0';
+--            crop_state                              <= XC_FET2;
+
+--          when XC_FET2 =>
+--            -- fb_crop_rd_data now holds the requested word: cache it, re-eval
+--            cw                                      <= fb_crop_rd_data;
+--            cw_idx                                  <= crop_rd_idx;
+--            cw_valid                                <= '1';
+--            crop_state                              <= XC_PIPE;
           when XC_FET1 =>
-            -- crop_rd_idx applied this cycle; registered BRAM latches at edge
-            gaus_in_tvalid                          <= '0';
-            crop_state                              <= XC_FET2;
-
+              -- crop_rd_idx applied this cycle; registered BRAM latches at edge
+              gaus_in_tvalid <= '0';
+              crop_state     <= XC_FET2;
+        
           when XC_FET2 =>
-            -- fb_crop_rd_data now holds the requested word: cache it, re-eval
-            cw                                      <= fb_crop_rd_data;
-            cw_idx                                  <= crop_rd_idx;
-            cw_valid                                <= '1';
-            crop_state                              <= XC_PREP;
+              -- fb_crop_rd_data (rd_data0/1/2 mux) now valid but unregistered; wait one more
+              gaus_in_tvalid <= '0';
+              crop_state     <= XC_FET3;
+        
+          when XC_FET3 =>
+              -- fb_crop_rd_data_r now holds the requested word, cleanly registered
+              cw         <= fb_crop_rd_data_r;    -- was fb_crop_rd_data
+              cw_idx     <= crop_rd_idx;
+              cw_valid   <= '1';
+              crop_state <= XC_PIPE;
 
           when XC_DRIVE =>
             -- hold tdata/tvalid until gaussian accepts (lossless stall)
@@ -926,15 +1055,15 @@ begin
                   cw_valid                          <= '0';
                   crop_x0                           <= to_signed(to_integer(buf_coords(to_integer(crop_ptr))(crop_det_i + 1).cx) * CELL_SIZE + BOX_ORIGIN_OFFS, crop_x0'length);
                   crop_y0                           <= to_signed(to_integer(buf_coords(to_integer(crop_ptr))(crop_det_i + 1).cy) * CELL_SIZE + BOX_ORIGIN_OFFS, crop_y0'length);
-                  crop_state                        <= XC_PREP;
+                  crop_state                        <= XC_PREP1;
                 end if;
               elsif crop_c = to_unsigned(CROP_DIM - 1, CROP_AWIDTH) then
                 crop_c                              <= (others => '0');
                 crop_r                              <= crop_r + 1;
-                crop_state                          <= XC_PREP;
+                crop_state                          <= XC_PREP1;
               else
                 crop_c                              <= crop_c + 1;
-                crop_state                          <= XC_PREP;
+                crop_state                          <= XC_PREP1;
               end if;
             end if;
           when XC_DONE =>
@@ -949,15 +1078,34 @@ begin
       end if;
     end if;
   end process pCrop;
+  
+  ----------------------------------------------------------------------------
+  -- Gaussian input buffer : a pipelined stage for the Gaussian input so that
+  --   timing constaints are met.
+  ----------------------------------------------------------------------------
+  pGausInput: process (clk250) is
+  begin
+    if rising_edge(clk250) then
+        if s_axis_resetn = '0' then
+            gaus_in_post_buf_tdata                           <= (others => '0');
+            gaus_in_post_buf_tvalid                          <= '0';
+            gaus_in_post_buf_tready                          <= '0';
+        else
+            gaus_in_post_buf_tdata                           <= gaus_in_tdata;
+            gaus_in_post_buf_tvalid                          <= gaus_in_tvalid;
+            gaus_in_post_buf_tready                          <= gaus_in_tready;    
+       end if;
+    end if;
+  end process pGausInput;
 
   ----------------------------------------------------------------------------
   -- Gaussian instance (free-running, wired identically to FOLO)
   ----------------------------------------------------------------------------
   uGaus: component gaussian_0
   port map (
-    InputLayer_TDATA   => gaus_in_tdata,
-    InputLayer_TVALID  => gaus_in_tvalid,
-    InputLayer_TREADY  => gaus_in_tready,
+    InputLayer_TDATA   => gaus_in_post_buf_tdata,
+    InputLayer_TVALID  => gaus_in_post_buf_tvalid,
+    InputLayer_TREADY  => gaus_in_post_buf_tready,
     layer32_out_TDATA  => gaus_out_tdata,
     layer32_out_TVALID => gaus_out_tvalid,
     layer32_out_TREADY => '1',
