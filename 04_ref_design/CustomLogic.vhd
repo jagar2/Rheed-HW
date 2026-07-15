@@ -385,7 +385,6 @@ architecture behav of CustomLogic is
   -- Gaussian input buffer
   signal gaus_in_post_buf_tdata        : std_logic_vector(GAUS_IN_WIDTH - 1 downto 0)     := (others => '0');
   signal gaus_in_post_buf_tvalid       : std_logic                                        := '0';
-  signal gaus_in_post_buf_tready       : std_logic                                        := '0';
   
   -- Gaussian handshake
   signal gaus_in_tdata        : std_logic_vector(GAUS_IN_WIDTH - 1 downto 0)     := (others => '0');
@@ -1036,6 +1035,7 @@ begin
               cw         <= fb_crop_rd_data_r;    -- was fb_crop_rd_data
               cw_idx     <= crop_rd_idx;
               cw_valid   <= '1';
+              req_fetch  <= '0';        --
               crop_state <= XC_PIPE;
 
           when XC_DRIVE =>
@@ -1089,11 +1089,9 @@ begin
         if s_axis_resetn = '0' then
             gaus_in_post_buf_tdata                           <= (others => '0');
             gaus_in_post_buf_tvalid                          <= '0';
-            gaus_in_post_buf_tready                          <= '0';
         else
             gaus_in_post_buf_tdata                           <= gaus_in_tdata;
             gaus_in_post_buf_tvalid                          <= gaus_in_tvalid;
-            gaus_in_post_buf_tready                          <= gaus_in_tready;    
        end if;
     end if;
   end process pGausInput;
@@ -1105,7 +1103,7 @@ begin
   port map (
     InputLayer_TDATA   => gaus_in_post_buf_tdata,
     InputLayer_TVALID  => gaus_in_post_buf_tvalid,
-    InputLayer_TREADY  => gaus_in_post_buf_tready,
+    InputLayer_TREADY  => gaus_in_tready,
     layer32_out_TDATA  => gaus_out_tdata,
     layer32_out_TVALID => gaus_out_tvalid,
     layer32_out_TREADY => '1',
