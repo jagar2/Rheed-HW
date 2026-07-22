@@ -209,9 +209,7 @@ architecture behav of CustomLogic is
   type res_buf_t is array (0 to OVERLAY_WORDS - 1) of std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);
 
   type cap_state_t is (C_IDLE, C_ARM, C_WRITE);
-  --type feed_state_t is (F_IDLE, F_WAIT, F_LOAD, F_RUN);
   type feed_state_t is (F_IDLE, F_WAIT, F_WAIT2, F_LOAD, F_RUN);
-  --type crop_state_t is (XC_IDLE, XC_PREP, XC_PIPE, XC_FET1, XC_FET2, XC_DRIVE, XC_DONE);
   type crop_state_t is (XC_IDLE, XC_PREP1, XC_PREP1B, XC_PREP2, XC_PIPE, XC_FET1, XC_FET2, XC_FET3, XC_DRIVE, XC_DONE);
 
   -- 3-deep frame ring : a buffer walks EMPTY -> FILLED (FOLO domain) ->
@@ -229,7 +227,7 @@ architecture behav of CustomLogic is
   type buf_coord_arr_t is array (0 to 2) of det_list_t;
 
   -- Running value array for the top-N detector (one score per kept detection).
-  type det_val_arr_t is array (0 to NUM_DET_MAX - 1) of unsigned(FOLO_OUT_WIDTH - 1 downto 0);
+--  type det_val_arr_t is array (0 to NUM_DET_MAX - 1) of unsigned(FOLO_OUT_WIDTH - 1 downto 0);
 
   -- Gaussian result set (one 112b vector per detection), double buffered.
   type gaus_res_set_t is array (0 to NUM_DET_MAX - 1) of std_logic_vector(GAUS_OUT_WIDTH - 1 downto 0);
@@ -270,6 +268,32 @@ architecture behav of CustomLogic is
       ap_idle            : out std_logic
     );
   end component gaussian_0;
+
+  component nms_top5 is
+    port (
+      clk               : in  std_logic;
+      rst_n             : in  std_logic;
+      tvalid            : in  std_logic;
+      tdata             : in  std_logic_vector(15 downto 0);
+      tlast             : in  std_logic;
+      done              : out std_logic;
+      top_val_0         : out std_logic_vector(15 downto 0);
+      top_val_1         : out std_logic_vector(15 downto 0);
+      top_val_2         : out std_logic_vector(15 downto 0);
+      top_val_3         : out std_logic_vector(15 downto 0);
+      top_val_4         : out std_logic_vector(15 downto 0);
+      top_x_0           : out std_logic_vector(5 downto 0);
+      top_x_1           : out std_logic_vector(5 downto 0);
+      top_x_2           : out std_logic_vector(5 downto 0);
+      top_x_3           : out std_logic_vector(5 downto 0);
+      top_x_4           : out std_logic_vector(5 downto 0);
+      top_y_0           : out std_logic_vector(5 downto 0);
+      top_y_1           : out std_logic_vector(5 downto 0);
+      top_y_2           : out std_logic_vector(5 downto 0);
+      top_y_3           : out std_logic_vector(5 downto 0);
+      top_y_4           : out std_logic_vector(5 downto 0)
+    );
+  end component nms_top5;
 
   ----------------------------------------------------------------------------
   -- Functions
@@ -351,11 +375,35 @@ architecture behav of CustomLogic is
   -- the running 5-best (sorted descending: index 0 = highest). det_list is the
   -- published coordinate list, finalized on the last value so it is valid the
   -- same cycle res_ready_pulse asserts.
-  signal db_col               : unsigned(GRID_AWIDTH - 1 downto 0)               := (others => '0');
-  signal db_row               : unsigned(GRID_AWIDTH - 1 downto 0)               := (others => '0');
-  signal db_best_val          : det_val_arr_t                                    := (others => (others => '0'));
-  signal db_best              : det_list_t                                       := (others => (cx => (others => '0'), cy => (others => '0')));
-  signal det_list             : det_list_t                                       := (others => (cx => (others => '0'), cy => (others => '0')));
+--  signal db_col               : unsigned(GRID_AWIDTH - 1 downto 0)               := (others => '0');
+--  signal db_row               : unsigned(GRID_AWIDTH - 1 downto 0)               := (others => '0');
+--  signal db_best_val          : det_val_arr_t                                    := (others => (others => '0'));
+--  signal db_best              : det_list_t                                       := (others => (cx => (others => '0'), cy => (others => '0')));
+--  signal det_list             : det_list_t                                       := (others => (cx => (others => '0'), cy => (others => '0')));
+  
+  signal nms_done_d           : std_logic := '0';
+  signal nms_done_pulse       : std_logic;
+  
+  -- nms_top5 (NMS top-5) interface
+  signal nms_in_tvalid         : std_logic                                        := '0';
+  signal nms_in_tdata          : std_logic_vector(15 downto 0)                    := (others => '0');
+  signal nms_in_tlast          : std_logic                                        := '0';
+  signal nms_done              : std_logic;
+  signal nms_top_val_0         : std_logic_vector(15 downto 0);
+  signal nms_top_val_1         : std_logic_vector(15 downto 0);
+  signal nms_top_val_2         : std_logic_vector(15 downto 0);
+  signal nms_top_val_3         : std_logic_vector(15 downto 0);
+  signal nms_top_val_4         : std_logic_vector(15 downto 0);
+  signal nms_top_x_0           : std_logic_vector(5 downto 0);
+  signal nms_top_x_1           : std_logic_vector(5 downto 0);
+  signal nms_top_x_2           : std_logic_vector(5 downto 0);
+  signal nms_top_x_3           : std_logic_vector(5 downto 0);
+  signal nms_top_x_4           : std_logic_vector(5 downto 0);
+  signal nms_top_y_0           : std_logic_vector(5 downto 0);
+  signal nms_top_y_1           : std_logic_vector(5 downto 0);
+  signal nms_top_y_2           : std_logic_vector(5 downto 0);
+  signal nms_top_y_3           : std_logic_vector(5 downto 0);
+  signal nms_top_y_4           : std_logic_vector(5 downto 0);
 
   -- Crop sequencer
   signal crop_state           : crop_state_t                                     := XC_IDLE;
@@ -375,7 +423,8 @@ architecture behav of CustomLogic is
   signal w_i_reg              : unsigned(FB_AWORD - 1 downto 0)                  := (others => '0');
   signal b_i_reg              : natural range 0 to WORDS_PER_STREAM - 1          := 0;
   signal inb_reg              : std_logic                                        := '0';
-  signal px_i_reg             : natural range 0 to WORDS_PER_STREAM - 1          := 0;
+  --signal px_i_reg             : natural range 0 to WORDS_PER_STREAM - 1          := 0;
+  signal px_i_reg             : integer range -32 to IMG_DIM + 32                := 0;
   signal w_mult_reg : unsigned(15 downto 0) := (others => '0');  -- py_i * 20, pre-add
   
   -- frame buffer
@@ -476,14 +525,30 @@ begin
         if folo_done = '1' then
           folo_ptr                                  <= inc3(folo_ptr);
         end if;
-        if res_ready_pulse = '1' then
-          buf_state(to_integer(folo_res_ptr))       <= B_DETECTED;
-          -- latch the whole top-N coord list (slots 0..NUM_DET-1)
-          for i in 0 to NUM_DET - 1 loop
-            buf_coords(to_integer(folo_res_ptr))(i) <= det_list(i);
-          end loop;
-          folo_res_ptr                              <= inc3(folo_res_ptr);
+        if nms_done_pulse = '1' then
+          buf_state(to_integer(folo_res_ptr))           <= B_DETECTED;
+          buf_coords(to_integer(folo_res_ptr))(0).cx    <= unsigned(nms_top_x_0);
+          buf_coords(to_integer(folo_res_ptr))(0).cy    <= unsigned(nms_top_y_0);
+          buf_coords(to_integer(folo_res_ptr))(1).cx    <= unsigned(nms_top_x_1);
+          buf_coords(to_integer(folo_res_ptr))(1).cy    <= unsigned(nms_top_y_1);
+          buf_coords(to_integer(folo_res_ptr))(2).cx    <= unsigned(nms_top_x_2);
+          buf_coords(to_integer(folo_res_ptr))(2).cy    <= unsigned(nms_top_y_2);
+          buf_coords(to_integer(folo_res_ptr))(3).cx    <= unsigned(nms_top_x_3);
+          buf_coords(to_integer(folo_res_ptr))(3).cy    <= unsigned(nms_top_y_3);
+          buf_coords(to_integer(folo_res_ptr))(4).cx    <= unsigned(nms_top_x_4);
+          buf_coords(to_integer(folo_res_ptr))(4).cy    <= unsigned(nms_top_y_4);
+          folo_res_ptr                                  <= inc3(folo_res_ptr);
         end if;
+        
+        -- from arg max
+--        if res_ready_pulse = '1' then
+--          buf_state(to_integer(folo_res_ptr))       <= B_DETECTED;
+--          -- latch the whole top-N coord list (slots 0..NUM_DET-1)
+--          for i in 0 to NUM_DET - 1 loop
+--            buf_coords(to_integer(folo_res_ptr))(i) <= det_list(i);
+--          end loop;
+--          folo_res_ptr                              <= inc3(folo_res_ptr);
+--        end if;
         if crop_done = '1' then
           buf_state(to_integer(crop_ptr))           <= B_EMPTY;
           crop_ptr                                  <= inc3(crop_ptr);
@@ -767,7 +832,39 @@ begin
 
   res_rd_idx <= resize(cur_idx - to_unsigned(OVERLAY_START, FB_AWORD), RB_AWORD) when (cur_idx >= to_unsigned(OVERLAY_START, FB_AWORD) and cur_idx < to_unsigned(OVERLAY_START + OVERLAY_WORDS, FB_AWORD)) else (others => '0');
   res_rd_data <= res_buf0(to_integer(res_rd_idx)) when ovl_rd_ptr = '0' else res_buf1(to_integer(res_rd_idx));
-
+    
+  
+  ----------------------------------------------------------------------------
+  -- NMS top-5 instance : streaming, spatially-distinct alternative to pDetect.
+  --   Consumes the 40x40 FOLO grid 1 px/cycle (raster order) and returns the
+  --   5 strongest peaks with a minimum pairwise separation (no frame buffer).
+  --   Same det_list-shaped output as pDetect; swap in to replace top-N-by-value.
+  ----------------------------------------------------------------------------  
+  uTopCrop: component nms_top5
+  port map (
+    clk               => clk250,
+    rst_n             => s_axis_resetn,
+    tvalid            => nms_in_tvalid,
+    tdata             => nms_in_tdata,
+    tlast             => nms_in_tlast,
+    done              => nms_done,
+    top_val_0         => nms_top_val_0,
+    top_val_1         => nms_top_val_1,
+    top_val_2         => nms_top_val_2,
+    top_val_3         => nms_top_val_3,
+    top_val_4         => nms_top_val_4,
+    top_x_0           => nms_top_x_0,
+    top_x_1           => nms_top_x_1,
+    top_x_2           => nms_top_x_2,
+    top_x_3           => nms_top_x_3,
+    top_x_4           => nms_top_x_4,
+    top_y_0           => nms_top_y_0,
+    top_y_1           => nms_top_y_1,
+    top_y_2           => nms_top_y_2,
+    top_y_3           => nms_top_y_3,
+    top_y_4           => nms_top_y_4
+  );
+  
   ----------------------------------------------------------------------------
   -- Detector : streaming top-5 argmax over the 1600 unsigned FOLO values, in
   --   the collector domain. Maintains a 5-deep list sorted descending by value
@@ -790,89 +887,114 @@ begin
   --   (exactly NUM_DET results). Not an issue for a real confidence map.
   ----------------------------------------------------------------------------
   pDetect: process (clk250) is
-    variable v                : unsigned(FOLO_OUT_WIDTH - 1 downto 0);
-    variable p                : integer range 0 to NUM_DET;                                                                        -- insertion index (NUM_DET = not in top-N)
-    variable nv               : det_val_arr_t;                                                                                     -- next value list
-    variable nc               : det_list_t;                                                                                        -- next coord list
-    variable last             : boolean;
   begin
     if rising_edge(clk250) then
       if s_axis_resetn = '0' then
-        db_col                                      <= (others => '0');
-        db_row                                      <= (others => '0');
-        for i in 0 to NUM_DET - 1 loop
-          db_best_val(i)                            <= (others => '0');
-          db_best(i).cx                             <= (others => '0');
-          db_best(i).cy                             <= (others => '0');
-          det_list(i).cx                            <= (others => '0');
-          det_list(i).cy                            <= (others => '0');
-        end loop;
+        nms_done_d    <= '0';
+        nms_in_tvalid <= '0';
+        nms_in_tdata  <= (others => '0');
+        nms_in_tlast  <= '0';
       else
-        if folo_out_tvalid = '1' then
-          v                                         := unsigned(folo_out_tdata);
-
-          -- insertion index: smallest i with v > db_best_val(i) (list is sorted
-          -- descending, so 'downto' makes the last write the smallest such i).
-          p                                         := NUM_DET;
-          for i in NUM_DET - 1 downto 0 loop
-            if v > db_best_val(i) then
-              p                                     := i;
-            end if;
-          end loop;
-
-          -- build the post-insert list: keep [0..p-1], insert v at p, shift the
-          -- rest down by one (entry NUM_DET-1 falls off the end).
-          for i in 0 to NUM_DET - 1 loop
-            if i = p then
-              nv(i)                                 := v;
-              nc(i).cx                              := db_col;
-              nc(i).cy                              := db_row;
-            elsif i > p then
-              -- shift-down branch; i > p guarantees i >= 1, so i-1 >= 0.
-              -- Index with (i-1) only inside this branch so synthesis never
-              -- elaborates db_best(-1) for i = 0 (i=0 can only hit i<=p above).
-              nv(i)                                 := db_best_val(i - 1);
-              nc(i).cx                              := db_best(i - 1).cx;
-              nc(i).cy                              := db_best(i - 1).cy;
-            else
-              -- i < p : keep
-              nv(i)                                 := db_best_val(i);
-              nc(i).cx                              := db_best(i).cx;
-              nc(i).cy                              := db_best(i).cy;
-            end if;
-          end loop;
-          
-          last                                      := (db_col = to_unsigned(GRID_DIM - 1, GRID_AWIDTH)) and (db_row = to_unsigned(GRID_DIM - 1, GRID_AWIDTH));
-
-          if last then
-            -- publish the final list (incl. this last value) and reset for the
-            -- next frame; det_list is valid the cycle res_ready_pulse asserts.
-            for i in 0 to NUM_DET - 1 loop
-              det_list(i).cx                        <= nc(i).cx;
-              det_list(i).cy                        <= nc(i).cy;
-              db_best_val(i)                        <= (others => '0');
-              db_best(i).cx                         <= (others => '0');
-              db_best(i).cy                         <= (others => '0');
-            end loop;
-            db_col                                  <= (others => '0');
-            db_row                                  <= (others => '0');
-          else
-            for i in 0 to NUM_DET - 1 loop
-              db_best_val(i)                        <= nv(i);
-              db_best(i).cx                         <= nc(i).cx;
-              db_best(i).cy                         <= nc(i).cy;
-            end loop;
-            if db_col = to_unsigned(GRID_DIM - 1, GRID_AWIDTH) then
-              db_col                                <= (others => '0');
-              db_row                                <= db_row + 1;
-            else
-              db_col                                <= db_col + 1;
-            end if;
-          end if;
+        nms_done_d <= nms_done;
+        nms_done_pulse <= nms_done and not nms_done_d;
+        nms_in_tvalid <= folo_out_tvalid;
+        nms_in_tdata  <= folo_out_tdata;
+        if (folo_out_tvalid = '1' and res_val_cnt = to_unsigned(FOLO_OUT_VALUES - 1, VAL_CNT_WIDTH)) then
+          nms_in_tlast <= '1';
+        else
+          nms_in_tlast <= '0';
         end if;
       end if;
     end if;
   end process pDetect;
+    
+
+  
+  ------------------------ old arg max implmentation -------------------------
+--  pDetect: process (clk250) is
+--    variable v                : unsigned(FOLO_OUT_WIDTH - 1 downto 0);
+--    variable p                : integer range 0 to NUM_DET;                                                                        -- insertion index (NUM_DET = not in top-N)
+--    variable nv               : det_val_arr_t;                                                                                     -- next value list
+--    variable nc               : det_list_t;                                                                                        -- next coord list
+--    variable last             : boolean;
+--  begin
+--    if rising_edge(clk250) then
+--      if s_axis_resetn = '0' then
+--        db_col                                      <= (others => '0');
+--        db_row                                      <= (others => '0');
+--        for i in 0 to NUM_DET - 1 loop
+--          db_best_val(i)                            <= (others => '0');
+--          db_best(i).cx                             <= (others => '0');
+--          db_best(i).cy                             <= (others => '0');
+--          det_list(i).cx                            <= (others => '0');
+--          det_list(i).cy                            <= (others => '0');
+--        end loop;
+--      else
+--        if folo_out_tvalid = '1' then
+--          v                                         := unsigned(folo_out_tdata);
+
+--          -- insertion index: smallest i with v > db_best_val(i) (list is sorted
+--          -- descending, so 'downto' makes the last write the smallest such i).
+--          p                                         := NUM_DET;
+--          for i in NUM_DET - 1 downto 0 loop
+--            if v > db_best_val(i) then
+--              p                                     := i;
+--            end if;
+--          end loop;
+
+--          -- build the post-insert list: keep [0..p-1], insert v at p, shift the
+--          -- rest down by one (entry NUM_DET-1 falls off the end).
+--          for i in 0 to NUM_DET - 1 loop
+--            if i = p then
+--              nv(i)                                 := v;
+--              nc(i).cx                              := db_col;
+--              nc(i).cy                              := db_row;
+--            elsif i > p then
+--              -- shift-down branch; i > p guarantees i >= 1, so i-1 >= 0.
+--              -- Index with (i-1) only inside this branch so synthesis never
+--              -- elaborates db_best(-1) for i = 0 (i=0 can only hit i<=p above).
+--              nv(i)                                 := db_best_val(i - 1);
+--              nc(i).cx                              := db_best(i - 1).cx;
+--              nc(i).cy                              := db_best(i - 1).cy;
+--            else
+--              -- i < p : keep
+--              nv(i)                                 := db_best_val(i);
+--              nc(i).cx                              := db_best(i).cx;
+--              nc(i).cy                              := db_best(i).cy;
+--            end if;
+--          end loop;
+          
+--          last                                      := (db_col = to_unsigned(GRID_DIM - 1, GRID_AWIDTH)) and (db_row = to_unsigned(GRID_DIM - 1, GRID_AWIDTH));
+
+--          if last then
+--            -- publish the final list (incl. this last value) and reset for the
+--            -- next frame; det_list is valid the cycle res_ready_pulse asserts.
+--            for i in 0 to NUM_DET - 1 loop
+--              det_list(i).cx                        <= nc(i).cx;
+--              det_list(i).cy                        <= nc(i).cy;
+--              db_best_val(i)                        <= (others => '0');
+--              db_best(i).cx                         <= (others => '0');
+--              db_best(i).cy                         <= (others => '0');
+--            end loop;
+--            db_col                                  <= (others => '0');
+--            db_row                                  <= (others => '0');
+--          else
+--            for i in 0 to NUM_DET - 1 loop
+--              db_best_val(i)                        <= nv(i);
+--              db_best(i).cx                         <= nc(i).cx;
+--              db_best(i).cy                         <= nc(i).cy;
+--            end loop;
+--            if db_col = to_unsigned(GRID_DIM - 1, GRID_AWIDTH) then
+--              db_col                                <= (others => '0');
+--              db_row                                <= db_row + 1;
+--            else
+--              db_col                                <= db_col + 1;
+--            end if;
+--          end if;
+--        end if;
+--      end if;
+--    end if;
+--  end process pDetect;
 
   ----------------------------------------------------------------------------
   -- Crop sequencer : for buf crop_ptr, for each detection in the list, un-scale
@@ -888,8 +1010,6 @@ begin
     variable px_i             : integer;
     variable py_i             : integer;
     variable lin_i            : integer;
-    --variable w_i              : integer;
-    --variable b_i              : integer;
     variable inb              : boolean;
     variable cwd              : unsigned(STREAM_DATA_WIDTH - 1 downto 0);
     variable pix8             : std_logic_vector(BITS_PER_PIXEL - 1 downto 0);
@@ -929,34 +1049,6 @@ begin
               crop_y0                               <= to_signed(to_integer(buf_coords(to_integer(crop_ptr))(0).cy) * CELL_SIZE + BOX_ORIGIN_OFFS, crop_y0'length);
               crop_state                            <= XC_PREP1;
             end if;
-
---          when XC_PREP =>
---            -- pixel coordinate for the current (col,row) within the box
---            px_i                                    := to_integer(crop_x0) + to_integer(crop_c);
---            py_i                                    := to_integer(crop_y0) + to_integer(crop_r);
---            inb                                     := (px_i >= 0) and (px_i <= IMG_DIM - 1) and (py_i >= 0) and (py_i <= IMG_DIM - 1);
---            req_fetch                               <= '0';
---            if inb then
---              --lin_i                                 := py_i * IMG_DIM + px_i;
---              --w_i                                   := lin_i / WORDS_PER_STREAM;
---              --b_i                                   := lin_i mod WORDS_PER_STREAM;
---              -- this requires IMG_DIM / WORDS_PER_STREAM to be a whole number:
---              w_i                                   := py_i * (IMG_DIM / WORDS_PER_STREAM) + (px_i / WORDS_PER_STREAM);
---              b_i                                   := px_i mod WORDS_PER_STREAM;
---              req_word                              <= to_unsigned(w_i, FB_AWORD);
---              req_byte                              <= b_i;
---              req_inb                               <= '1';
---              if (cw_valid = '0') or (to_unsigned(w_i, FB_AWORD) /= cw_idx) then
---                req_fetch                           <= '1';
---              end if;
---            else
---              w_i                                   := 0;
---              b_i                                   := 0;
---              req_inb                               <= '0';
---            end if;
-            
---            gaus_in_tvalid <= '0';
---            crop_state <= XC_PIPE;
           when XC_PREP1 =>
               px_i := to_integer(crop_x0) + to_integer(crop_c);
               py_i := to_integer(crop_y0) + to_integer(crop_r);
@@ -972,12 +1064,23 @@ begin
               end if;
               crop_state <= XC_PREP1B;              -- new state
           
+--          when XC_PREP1B =>
+--              w_i_reg <= resize(w_mult_reg + to_unsigned(px_i_reg / WORDS_PER_STREAM, FB_AWORD), FB_AWORD);
+--              crop_state <= XC_PREP2;
           when XC_PREP1B =>
-              w_i_reg <= resize(w_mult_reg + to_unsigned(px_i_reg / WORDS_PER_STREAM, FB_AWORD), FB_AWORD);
+              if px_i_reg >= 0 then
+                w_i_reg <= resize(w_mult_reg + to_unsigned(px_i_reg / WORDS_PER_STREAM, FB_AWORD), FB_AWORD);
+              else
+                w_i_reg <= (others => '0');   -- out-of-bounds; address discarded via req_inb/inb_reg downstream
+              end if;
               crop_state <= XC_PREP2;
-              
+
           when XC_PREP2 =>
-              req_word  <= w_i_reg;
+              if inb_reg = '1' then
+                req_word <= w_i_reg;
+              else
+                req_word <= (others => '0');   -- safe dummy address; pixel will be zero-padded via req_inb
+              end if;
               req_byte  <= b_i_reg;
               req_inb   <= inb_reg;
               if inb_reg = '1' and ((cw_valid = '0') or (w_i_reg /= cw_idx)) then
@@ -986,14 +1089,20 @@ begin
                 req_fetch <= '0';
               end if;
               crop_state <= XC_PIPE;
+--          when XC_PREP2 =>
+--              req_word  <= w_i_reg;
+--              req_byte  <= b_i_reg;
+--              req_inb   <= inb_reg;
+--              if inb_reg = '1' and ((cw_valid = '0') or (w_i_reg /= cw_idx)) then
+--                req_fetch <= '1';
+--              else
+--                req_fetch <= '0';
+--              end if;
+--              crop_state <= XC_PIPE;
             
           when XC_PIPE =>
-            --if inb and ((cw_valid = '0') or (to_unsigned(w_i, FB_AWORD) /= cw_idx)) then
-            --crop_rd_idx                           <= req_word;
-            --if (req_inb = '1') and ((cw_valid = '0') or (req_word /= cw_idx)) then
             if (req_fetch = '1') then
               -- need a different frame word: issue read, wait out the latency
-              --crop_rd_idx                           <= req_word;
               gaus_in_tvalid                        <= '0';
               crop_state                            <= XC_FET1;
             else
@@ -1008,18 +1117,6 @@ begin
               gaus_in_tvalid                        <= '1';
               crop_state                            <= XC_DRIVE;
             end if; 
-
---          when XC_FET1 =>
---            -- crop_rd_idx applied this cycle; registered BRAM latches at edge
---            gaus_in_tvalid                          <= '0';
---            crop_state                              <= XC_FET2;
-
---          when XC_FET2 =>
---            -- fb_crop_rd_data now holds the requested word: cache it, re-eval
---            cw                                      <= fb_crop_rd_data;
---            cw_idx                                  <= crop_rd_idx;
---            cw_valid                                <= '1';
---            crop_state                              <= XC_PIPE;
           when XC_FET1 =>
               -- crop_rd_idx applied this cycle; registered BRAM latches at edge
               gaus_in_tvalid <= '0';
