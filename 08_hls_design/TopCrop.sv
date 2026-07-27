@@ -63,6 +63,8 @@ module nms_top5 (
     logic [15:0] slot_val [TOP_N];             // value 0 == empty slot
     logic [5:0]  slot_x   [TOP_N];
     logic [5:0]  slot_y   [TOP_N];
+    
+    logic        done_pre;
 
     //--------------------------------------------------------------------------
     // Combinational signals
@@ -164,9 +166,13 @@ module nms_top5 (
         // Sorting nxt_* means output registers are final on the same edge
         // that processes tlast / asserts done.
         for (int j = 0; j < TOP_N; j++) begin
-            srt_val[j] = nxt_val[j];
-            srt_x[j]   = nxt_x[j];
-            srt_y[j]   = nxt_y[j];
+//            srt_val[j] = nxt_val[j];
+//            srt_x[j]   = nxt_x[j];
+//            srt_y[j]   = nxt_y[j];
+            srt_val[j] = slot_val[j];
+            srt_x[j]   = slot_x[j];
+            srt_y[j]   = slot_y[j];
+
         end
         for (int a = 0; a < TOP_N-1; a++) begin
             for (int b = 0; b < TOP_N-1-a; b++) begin
@@ -193,6 +199,7 @@ module nms_top5 (
             x_cnt <= '0;
             y_cnt <= '0;
             done  <= 1'b0;
+            done_pre <= 1'b0; 
             for (int j = 0; j < TOP_N; j++) begin
                 slot_val[j] <= '0;
                 slot_x[j]   <= '0;
@@ -212,15 +219,40 @@ module nms_top5 (
                 slot_x[j]   <= nxt_x[j];
                 slot_y[j]   <= nxt_y[j];
             end
+            
+//            // Per-frame slot clear: on the done_pre pulse (one cycle after
+//            // tlast), the sort has already consumed the frame-final slot_*
+//            // this same edge, so wiping here only resets state for the NEXT
+//            // frame. Ordered AFTER the update loop so the clear wins on L+1.
+            if (done_pre) begin
+                for (int j = 0; j < TOP_N; j++) begin
+                    slot_val[j] <= '0;
+                    slot_x[j]   <= '0;
+                    slot_y[j]   <= '0;
+                end
+            end
 
             // Registered, sorted outputs (stable once the stream ends)
-            top_val_0 <= srt_val[0]; top_x_0 <= srt_x[0]; top_y_0 <= srt_y[0];
-            top_val_1 <= srt_val[1]; top_x_1 <= srt_x[1]; top_y_1 <= srt_y[1];
-            top_val_2 <= srt_val[2]; top_x_2 <= srt_x[2]; top_y_2 <= srt_y[2];
-            top_val_3 <= srt_val[3]; top_x_3 <= srt_x[3]; top_y_3 <= srt_y[3];
-            top_val_4 <= srt_val[4]; top_x_4 <= srt_x[4]; top_y_4 <= srt_y[4];
+//            top_val_0 <= srt_val[0]; top_x_0 <= srt_x[0]; top_y_0 <= srt_y[0];
+//            top_val_1 <= srt_val[1]; top_x_1 <= srt_x[1]; top_y_1 <= srt_y[1];
+//            top_val_2 <= srt_val[2]; top_x_2 <= srt_x[2]; top_y_2 <= srt_y[2];
+//            top_val_3 <= srt_val[3]; top_x_3 <= srt_x[3]; top_y_3 <= srt_y[3];
+//            top_val_4 <= srt_val[4]; top_x_4 <= srt_x[4]; top_y_4 <= srt_y[4];
+
+            // Latch the sorted result ONCE at frame end, hold until the next frame.
+            // srt_* is sort(slot_*)=s(FINAL) during L+1 while done_pre is high, so this
+            // captures the final result; holding means the VHDL delayed latch can grab it
+            // any cycle in the gap.
+            if (done_pre) begin
+                top_val_0 <= srt_val[0]; top_x_0 <= srt_x[0]; top_y_0 <= srt_y[0];
+                top_val_1 <= srt_val[1]; top_x_1 <= srt_x[1]; top_y_1 <= srt_y[1];
+                top_val_2 <= srt_val[2]; top_x_2 <= srt_x[2]; top_y_2 <= srt_y[2];
+                top_val_3 <= srt_val[3]; top_x_3 <= srt_x[3]; top_y_3 <= srt_y[3];
+                top_val_4 <= srt_val[4]; top_x_4 <= srt_x[4]; top_y_4 <= srt_y[4];
+            end
 
             // Raster counters: x wraps at GRID_W-1, y increments on wrap
+            done_pre <= 1'b0;
             if (tvalid) begin
                 if (x_cnt == 6'(GRID_W-1)) begin
                     x_cnt <= '0;
@@ -229,10 +261,23 @@ module nms_top5 (
                 else begin
                     x_cnt <= x_cnt + 6'd1;
                 end
-
+            
                 if (tlast)
-                    done <= 1'b1;   // pulses high one cycle after tlast, holds until reset
-            end
+                    done_pre <= 1'b1;   // was: done <= 1'b1
+                end
+            done <= done_pre;           // NEW: one-cycle align - must sit OUTSIDE the if(tvalid)
+//            if (tvalid) begin
+//                if (x_cnt == 6'(GRID_W-1)) begin
+//                    x_cnt <= '0;
+//                    y_cnt <= (y_cnt == 6'(GRID_H-1)) ? '0 : (y_cnt + 6'd1);
+//                end
+//                else begin
+//                    x_cnt <= x_cnt + 6'd1;
+//                end
+
+//                if (tlast)
+//                    done <= 1'b1;   // pulses high one cycle after tlast, holds until reset
+//            end
         end
     end
 
