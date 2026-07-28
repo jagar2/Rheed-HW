@@ -23,7 +23,7 @@
 // Outputs are registered every cycle from a combinational 5-element bubble
 // sorting network (10 compare-and-swap) over the *next* slot state, so they
 // are final and stable on the same edge that asserts done (one cycle after
-// tlast). done stays high until reset.
+// tlast).
 //==============================================================================
 
 module nms_top5 (
@@ -54,6 +54,14 @@ module nms_top5 (
     localparam int GRID_H      = 40;
     localparam int TOP_N       = 5;
     localparam int MIN_DIST_SQ = 64;   // 8^2 -> Euclidean distance < 8.0 px
+    
+    // compare-exchange helper written inline (a<->b, keep larger val at a)
+    `define CEX(a,b) \
+        if (v[a] < v[b]) begin \
+            {v[a],v[b]} = {v[b],v[a]}; \
+            {sx[a],sx[b]} = {sx[b],sx[a]}; \
+            {sy[a],sy[b]} = {sy[b],sy[a]}; \
+        end
 
     //--------------------------------------------------------------------------
     // State
@@ -80,8 +88,8 @@ module nms_top5 (
     logic        near_slot [TOP_N];            // within MIN_DIST_SQ & occupied
     logic        suppress;
 
-    logic [5:0]  dx, dy;
-    logic [12:0] dsq;
+    //logic [5:0]  dx, dy;
+    //logic [12:0] dsq;
 
     logic        has_empty;
     logic [2:0]  empty_idx;
@@ -91,10 +99,14 @@ module nms_top5 (
     logic [15:0] swp_v;
     logic [5:0]  swp_x, swp_y;
 
+
     //--------------------------------------------------------------------------
     // Next-state NMS logic + output sorting network
     //--------------------------------------------------------------------------
     always_comb begin
+        logic [15:0] v [TOP_N];
+        logic [5:0]  sx [TOP_N], sy [TOP_N];
+        
         // Defaults: hold current state
         for (int j = 0; j < TOP_N; j++) begin
             nxt_val[j]   = slot_val[j];
@@ -103,9 +115,9 @@ module nms_top5 (
             near_slot[j] = 1'b0;
         end
         suppress  = 1'b0;
-        dx        = '0;
-        dy        = '0;
-        dsq       = '0;
+        //dx        = '0;
+        //dy        = '0;
+        //dsq       = '0;
         has_empty = 1'b0;
         empty_idx = '0;
         min_idx   = '0;
@@ -117,10 +129,19 @@ module nms_top5 (
         if (tvalid) begin
             // Pass 1: proximity + suppression check
             for (int j = 0; j < TOP_N; j++) begin
-                dx  = (x_cnt >= slot_x[j]) ? (x_cnt - slot_x[j]) : (slot_x[j] - x_cnt);
-                dy  = (y_cnt >= slot_y[j]) ? (y_cnt - slot_y[j]) : (slot_y[j] - y_cnt);
-                dsq = (13'(dx) * 13'(dx)) + (13'(dy) * 13'(dy));   // <= 3042, fits 13 bits
-                near_slot[j] = (slot_val[j] != 16'd0) && (dsq < 13'(MIN_DIST_SQ));
+                logic [5:0] dxj, dyj;
+                logic [2:0] dxlj, dylj;
+                logic       dxbj, dybj;
+
+//                dx  = (x_cnt >= slot_x[j]) ? (x_cnt - slot_x[j]) : (slot_x[j] - x_cnt);
+//                dy  = (y_cnt >= slot_y[j]) ? (y_cnt - slot_y[j]) : (slot_y[j] - y_cnt);
+//                dsq = (13'(dx) * 13'(dx)) + (13'(dy) * 13'(dy));   // <= 3042, fits 13 bits
+//                near_slot[j] = (slot_val[j] != 16'd0) && (dsq < 13'(MIN_DIST_SQ));
+                dxj  = (x_cnt >= slot_x[j]) ? (x_cnt - slot_x[j]) : (slot_x[j] - x_cnt);
+                dyj  = (y_cnt >= slot_y[j]) ? (y_cnt - slot_y[j]) : (slot_y[j] - y_cnt);
+                dxlj = dxj[2:0];   dylj = dyj[2:0];
+                dxbj = |dxj[5:3];  dybj = |dyj[5:3];
+                near_slot[j] = (slot_val[j] != 16'd0) && !dxbj && !dybj && ((dxlj*dxlj + dylj*dylj) < 7'd64);
                 if (near_slot[j] && (slot_val[j] >= tdata))
                     suppress = 1'b1;
             end
@@ -165,30 +186,57 @@ module nms_top5 (
         // Bubble sorting network (10 compare-and-swap), descending by value.
         // Sorting nxt_* means output registers are final on the same edge
         // that processes tlast / asserts done.
-        for (int j = 0; j < TOP_N; j++) begin
-//            srt_val[j] = nxt_val[j];
-//            srt_x[j]   = nxt_x[j];
-//            srt_y[j]   = nxt_y[j];
-            srt_val[j] = slot_val[j];
-            srt_x[j]   = slot_x[j];
-            srt_y[j]   = slot_y[j];
+//        for (int j = 0; j < TOP_N; j++) begin
+////            srt_val[j] = nxt_val[j];
+////            srt_x[j]   = nxt_x[j];
+////            srt_y[j]   = nxt_y[j];
+//            srt_val[j] = slot_val[j];
+//            srt_x[j]   = slot_x[j];
+//            srt_y[j]   = slot_y[j];
 
+//        end
+//        for (int a = 0; a < TOP_N-1; a++) begin
+//            for (int b = 0; b < TOP_N-1-a; b++) begin
+//                if (srt_val[b] < srt_val[b+1]) begin
+//                    swp_v        = srt_val[b];
+//                    srt_val[b]   = srt_val[b+1];
+//                    srt_val[b+1] = swp_v;
+//                    swp_x        = srt_x[b];
+//                    srt_x[b]     = srt_x[b+1];
+//                    srt_x[b+1]   = swp_x;
+//                    swp_y        = srt_y[b];
+//                    srt_y[b]     = srt_y[b+1];
+//                    srt_y[b+1]   = swp_y;
+//                end
+//            end
+//        end
+        // --- depth-5 sorting network for TOP_N=5, descending by val ---
+        // operates on local arrays seeded from slot_*
+        for (int j = 0; j < TOP_N; j++) begin
+            v[j]  = slot_val[j];
+            sx[j] = slot_x[j];
+            sy[j] = slot_y[j];
         end
-        for (int a = 0; a < TOP_N-1; a++) begin
-            for (int b = 0; b < TOP_N-1-a; b++) begin
-                if (srt_val[b] < srt_val[b+1]) begin
-                    swp_v        = srt_val[b];
-                    srt_val[b]   = srt_val[b+1];
-                    srt_val[b+1] = swp_v;
-                    swp_x        = srt_x[b];
-                    srt_x[b]     = srt_x[b+1];
-                    srt_x[b+1]   = swp_x;
-                    swp_y        = srt_y[b];
-                    srt_y[b]     = srt_y[b+1];
-                    srt_y[b+1]   = swp_y;
-                end
-            end
+        
+        // Batcher/Knuth 5-input network, 9 comparators, depth 5:
+        // layer 1: (0,1)(3,4)
+        `CEX(0,1) `CEX(3,4)
+        // layer 2: (2,4)
+        `CEX(2,4)
+        // layer 3: (2,3)(1,4)
+        `CEX(2,3) `CEX(1,4)
+        // layer 4: (0,3)(1,2)
+        `CEX(0,3) `CEX(1,2)
+        // layer 5: (1,3)  ... then (0,1)(2,3) fold to finish
+        `CEX(1,3)
+        `CEX(0,1) `CEX(2,3) `CEX(1,2)
+        
+        for (int j = 0; j < TOP_N; j++) begin
+            srt_val[j] = v[j];
+            srt_x[j]   = sx[j];
+            srt_y[j]   = sy[j];
         end
+        
     end
 
     //--------------------------------------------------------------------------
@@ -282,3 +330,4 @@ module nms_top5 (
     end
 
 endmodule
+`undef CEX
