@@ -270,6 +270,11 @@ architecture behav of CustomLogic is
   end component gaussian_0;
 
   component nms_top5 is
+    generic (
+      GRID_W   : integer := 40;
+      GRID_H   : integer := 40;
+      MAX_CAND : integer := 256
+    );
     port (
       clk               : in  std_logic;
       rst_n             : in  std_logic;
@@ -338,9 +343,9 @@ architecture behav of CustomLogic is
   signal rd_data1             : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
   signal rd_data2             : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
   signal folo_rd_idx          : unsigned(FB_AWORD - 1 downto 0)                  := (others => '0');                               -- FOLO feed read index (combinational)
-  signal fb_folo_rd_data      : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);                                                  -- registered read for FOLO feed
+  -- signal fb_folo_rd_data      : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);                                                  -- registered read for FOLO feed
   signal crop_rd_idx          : unsigned(FB_AWORD - 1 downto 0)                  := (others => '0');                               -- crop read index (registered)
-  signal fb_crop_rd_data      : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);                                                  -- registered read for crop
+  -- signal fb_crop_rd_data      : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);                                                  -- registered read for crop
 
   -- Capture engine
   signal cap_state            : cap_state_t                                      := C_IDLE;
@@ -383,6 +388,8 @@ architecture behav of CustomLogic is
   
   signal nms_done_d           : std_logic := '0';
   signal nms_done_pulse       : std_logic;
+  
+  signal rd_data0_r, rd_data1_r, rd_data2_r : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
   
   -- nms_top5 (NMS top-5) interface
   signal nms_in_tvalid         : std_logic                                        := '0';
@@ -486,6 +493,11 @@ architecture behav of CustomLogic is
   attribute ram_style of res_buf0 : signal is "distributed";
   attribute ram_style of res_buf1 : signal is "distributed";
   
+  attribute cascade_height    : integer;                        
+  attribute cascade_height of frame_buf0 : signal is 2;         
+  attribute cascade_height of frame_buf1 : signal is 2;         
+  attribute cascade_height of frame_buf2 : signal is 2;         
+  
   -- Attributes for pipeline stage crop
   attribute keep      : string;
   attribute dont_touch : string;
@@ -581,14 +593,22 @@ begin
             frame_buf2(to_integer(fb_wr_idx))       <= fb_wr_data;
         end case;
       end if;
-      rd_data0                                      <= frame_buf0(to_integer(rd_addr0));
-      rd_data1                                      <= frame_buf1(to_integer(rd_addr1));
-      rd_data2                                      <= frame_buf2(to_integer(rd_addr2));
+      rd_data0   <= frame_buf0(to_integer(rd_addr0));
+      rd_data1   <= frame_buf1(to_integer(rd_addr1));
+      rd_data2   <= frame_buf2(to_integer(rd_addr2));
+      rd_data0_r <= rd_data0;      
+      rd_data1_r <= rd_data1;
+      rd_data2_r <= rd_data2;
+--      rd_data0                                      <= frame_buf0(to_integer(rd_addr0));
+--      rd_data1                                      <= frame_buf1(to_integer(rd_addr1));
+--      rd_data2                                      <= frame_buf2(to_integer(rd_addr2));
     end if;
   end process pFrameMem;
 
-  fb_folo_rd_data <= rd_data0 when folo_ptr = "00" else rd_data1 when folo_ptr = "01" else rd_data2;
-  fb_crop_rd_data <= rd_data0 when crop_ptr = "00" else rd_data1 when crop_ptr = "01" else rd_data2;
+--  fb_folo_rd_data <= rd_data0 when folo_ptr = "00" else rd_data1 when folo_ptr = "01" else rd_data2;
+--  fb_crop_rd_data <= rd_data0 when crop_ptr = "00" else rd_data1 when crop_ptr = "01" else rd_data2;
+    fb_folo_rd_data_r <= rd_data0_r when folo_ptr = "00" else rd_data1_r when folo_ptr = "01" else rd_data2_r;
+    fb_crop_rd_data_r <= rd_data0_r when crop_ptr = "00" else rd_data1_r when crop_ptr = "01" else rd_data2_r;
 
   ----------------------------------------------------------------------------
   -- Capture engine : snoops the live stream, lands exactly one valid frame into
@@ -661,18 +681,18 @@ begin
 --   each half only has to beat the clock on its own. Costs FOLO feed and
 --   crop fetch one extra cycle of latency per word fetched.
 ----------------------------------------------------------------------------
-  pRdDataReg: process (clk250) is
-  begin
-    if rising_edge(clk250) then
-      if s_axis_resetn = '0' then
-        fb_folo_rd_data_r <= (others => '0');
-        fb_crop_rd_data_r <= (others => '0');
-      else
-        fb_folo_rd_data_r <= fb_folo_rd_data;
-        fb_crop_rd_data_r <= fb_crop_rd_data;
-      end if;
-    end if;
-  end process pRdDataReg;
+--  pRdDataReg: process (clk250) is
+--  begin
+--    if rising_edge(clk250) then
+--      if s_axis_resetn = '0' then
+--        fb_folo_rd_data_r <= (others => '0');
+--        fb_crop_rd_data_r <= (others => '0');
+--      else
+--        fb_folo_rd_data_r <= fb_folo_rd_data;
+--        fb_crop_rd_data_r <= fb_crop_rd_data;
+--      end if;
+--    end if;
+--  end process pRdDataReg;
 
   ----------------------------------------------------------------------------
   -- FOLO feed engine : reads buf folo_ptr, sequentializes 128b -> 16x 8b pixels
@@ -840,7 +860,12 @@ begin
   --   5 strongest peaks with a minimum pairwise separation (no frame buffer).
   --   Same det_list-shaped output as pDetect; swap in to replace top-N-by-value.
   ----------------------------------------------------------------------------  
-  uTopCrop: component nms_top5
+  uNms: component nms_top5
+  generic map (
+    GRID_W   => GRID_DIM,
+    GRID_H   => GRID_DIM,
+    MAX_CAND => 256
+  )
   port map (
     clk               => clk250,
     rst_n             => s_axis_resetn,
@@ -891,6 +916,7 @@ begin
     if rising_edge(clk250) then
       if s_axis_resetn = '0' then
         nms_done_d    <= '0';
+        nms_done_pulse <= '0';
         nms_in_tvalid <= '0';
         nms_in_tdata  <= (others => '0');
         nms_in_tlast  <= '0';
