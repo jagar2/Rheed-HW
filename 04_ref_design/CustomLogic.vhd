@@ -210,7 +210,7 @@ architecture behav of CustomLogic is
 
   type cap_state_t is (C_IDLE, C_ARM, C_WRITE);
   type feed_state_t is (F_IDLE, F_WAIT, F_WAIT2, F_LOAD, F_RUN);
-  type crop_state_t is (XC_IDLE, XC_PREP1, XC_PREP1B, XC_PREP2, XC_PIPE, XC_FET1, XC_FET2, XC_FET3, XC_DRIVE, XC_DONE);
+  type crop_state_t is (XC_IDLE, XC_PREP1, XC_PREP1A, XC_PREP1B, XC_PREP2, XC_PIPE, XC_FET1, XC_FET2, XC_FET3, XC_DRIVE, XC_DONE);
 
   -- 3-deep frame ring : a buffer walks EMPTY -> FILLED (FOLO domain) ->
   -- DETECTED (crop domain) -> EMPTY. Distinct cursors own each stage so the
@@ -299,6 +299,26 @@ architecture behav of CustomLogic is
       top_y_4           : out std_logic_vector(5 downto 0)
     );
   end component nms_top5;
+  
+  component TestImageSource is
+   generic (
+      ENABLE            :     boolean := true;
+      STREAM_DATA_WIDTH :     natural := 128;
+      WORDS_PER_FRAME   :     natural := 6400;
+      INIT_FILE         :     string  := "test_image.mem"
+    );
+    port (
+      clk               : in  std_logic;
+      rst_n             : in  std_logic;
+      sw_enable         : in  std_logic;
+      tvalid            : in  std_logic;
+      tready            : in  std_logic;
+      sof               : in  std_logic;
+      tdata_in          : in  std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);
+      tdata_out         : out std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);
+      injecting         : out std_logic
+    );
+  end component TestImageSource;
 
   ----------------------------------------------------------------------------
   -- Functions
@@ -432,7 +452,10 @@ architecture behav of CustomLogic is
   signal inb_reg              : std_logic                                        := '0';
   --signal px_i_reg             : natural range 0 to WORDS_PER_STREAM - 1          := 0;
   signal px_i_reg             : integer range -32 to IMG_DIM + 32                := 0;
-  signal w_mult_reg : unsigned(15 downto 0) := (others => '0');  -- py_i * 20, pre-add
+  signal w_mult_reg           : unsigned(15 downto 0) := (others => '0');  -- py_i * 20, pre-add
+  
+  signal px_sum_reg           : signed(11 downto 0)                              := (others => '0');
+  signal py_sum_reg           : signed(11 downto 0)                              := (others => '0');
   
   -- frame buffer
   signal fb_folo_rd_data_r    : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0) := (others => '0');
@@ -481,6 +504,9 @@ architecture behav of CustomLogic is
   signal folo_out_cnt         : unsigned(31 downto 0)                            := (others => '0');
   signal gaus_in_cnt          : unsigned(31 downto 0)                            := (others => '0');
   signal gaus_out_cnt         : unsigned(31 downto 0)                            := (others => '0');
+  
+  signal s_axis_tdata_i       : std_logic_vector(STREAM_DATA_WIDTH - 1 downto 0);
+  signal testimg_en           : std_logic := '1';
 
 
   ----------------------------------------------------------------------------
@@ -503,6 +529,11 @@ architecture behav of CustomLogic is
   attribute dont_touch : string;
   attribute keep of w_mult_reg : signal is "true";
   attribute dont_touch of w_mult_reg : signal is "true";
+  
+  attribute keep of px_sum_reg : signal is "true";
+  attribute keep of py_sum_reg : signal is "true";
+  attribute dont_touch of px_sum_reg : signal is "true";
+  attribute dont_touch of py_sum_reg : signal is "true";
 
 begin
 
@@ -638,7 +669,7 @@ begin
             if s_axis_tvalid = '1' and m_axis_tready = '1' and s_axis_tuser(0) = '1' then
               fb_wr_en                              <= '1';
               fb_wr_idx                             <= (others => '0');
-              fb_wr_data                            <= s_axis_tdata;
+              fb_wr_data                            <= s_axis_tdata_i;
               cap_word_cnt                          <= to_unsigned(1, cap_word_cnt'length);
               cap_state                             <= C_WRITE;
             end if;
@@ -649,12 +680,12 @@ begin
                 -- unexpected SOF mid-frame: restart
                 fb_wr_en                            <= '1';
                 fb_wr_idx                           <= (others => '0');
-                fb_wr_data                          <= s_axis_tdata;
+                fb_wr_data                          <= s_axis_tdata_i;
                 cap_word_cnt                        <= to_unsigned(1, cap_word_cnt'length);
               else
                 fb_wr_en                            <= '1';
                 fb_wr_idx                           <= cap_word_cnt;
-                fb_wr_data                          <= s_axis_tdata;
+                fb_wr_data                          <= s_axis_tdata_i;
                 if cap_word_cnt = to_unsigned(WORDS_PER_FRAME - 1, cap_word_cnt'length) then
                   cap_commit                        <= '1';
                   cap_word_cnt                      <= (others => '0');
@@ -673,6 +704,43 @@ begin
       end if;
     end if;
   end process pCapture;
+  
+  ----------------------------------------------------------------------------
+  -- Control registers : host-writable via CustomLogicControlAddress /
+  --   CustomLogicControlData. Reset from srst250 (not s_axis_resetn) so the
+  --   setting survives stream restarts.
+  --     0x0000 bit 0 : 1 = inject test image, 0 = pass camera data through
+  ----------------------------------------------------------------------------
+  pCtrl: process (clk250) is
+  begin
+    if rising_edge(clk250) then
+      if srst250 = '1' then
+        testimg_en <= '1';
+      elsif s_ctrl_data_wr_en = '1' and s_ctrl_addr = x"0000" then
+        testimg_en <= s_ctrl_data_wr(0);
+      end if;
+    end if;
+  end process pCtrl;
+
+
+  uTestImg: component TestImageSource
+  generic map (
+    ENABLE            => true,              -- false => compiles away entirely
+    STREAM_DATA_WIDTH => STREAM_DATA_WIDTH,
+    WORDS_PER_FRAME   => WORDS_PER_FRAME,
+    INIT_FILE         => "test_image.mem"
+  )
+  port map (
+    clk       => clk250,
+    rst_n     => s_axis_resetn,
+    sw_enable => testimg_en,
+    tvalid    => s_axis_tvalid,
+    tready    => m_axis_tready,
+    sof       => s_axis_tuser(0),
+    tdata_in  => s_axis_tdata,
+    tdata_out => s_axis_tdata_i,
+    injecting => open
+  );
 
 
 ----------------------------------------------------------------------------
@@ -1058,6 +1126,11 @@ begin
         req_word                                    <= (others => '0');
         req_byte                                    <= 0;
         req_inb                                     <= '0';
+        
+        px_sum_reg                                  <= (others => '0');
+        py_sum_reg                                  <= (others => '0');
+        w_mult_reg                                  <= (others => '0');
+        inb_reg                                     <= '0';
       else
         crop_done                                   <= '0';                                                                        -- default  
         crop_rd_idx                                 <= req_word;
@@ -1075,24 +1148,52 @@ begin
               crop_y0                               <= to_signed(to_integer(buf_coords(to_integer(crop_ptr))(0).cy) * CELL_SIZE + BOX_ORIGIN_OFFS, crop_y0'length);
               crop_state                            <= XC_PREP1;
             end if;
-          when XC_PREP1 =>
-              px_i := to_integer(crop_x0) + to_integer(crop_c);
-              py_i := to_integer(crop_y0) + to_integer(crop_r);
-              inb  := (px_i >= 0) and (px_i <= IMG_DIM - 1) and (py_i >= 0) and (py_i <= IMG_DIM - 1);
+--          when XC_PREP1 =>
+--              px_i := to_integer(crop_x0) + to_integer(crop_c);
+--              py_i := to_integer(crop_y0) + to_integer(crop_r);
+--              inb  := (px_i >= 0) and (px_i <= IMG_DIM - 1) and (py_i >= 0) and (py_i <= IMG_DIM - 1);
 
-              w_mult_reg <= to_unsigned(py_i * (IMG_DIM / WORDS_PER_STREAM), 16);  -- multiply only
-              b_i_reg    <= px_i mod WORDS_PER_STREAM;
-              px_i_reg   <= px_i;
-              if inb then
-                inb_reg    <= '1';
-              else 
-                inb_reg    <= '0';
-              end if;
-              crop_state <= XC_PREP1B;              -- new state
+--              w_mult_reg <= to_unsigned(py_i * (IMG_DIM / WORDS_PER_STREAM), 16);  -- multiply only
+--              b_i_reg    <= px_i mod WORDS_PER_STREAM;
+--              px_i_reg   <= px_i;
+--              if inb then
+--                inb_reg    <= '1';
+--              else 
+--                inb_reg    <= '0';
+--              end if;
+--              crop_state <= XC_PREP1B;              -- new state
           
 --          when XC_PREP1B =>
 --              w_i_reg <= resize(w_mult_reg + to_unsigned(px_i_reg / WORDS_PER_STREAM, FB_AWORD), FB_AWORD);
 --              crop_state <= XC_PREP2;
+
+          when XC_PREP1 =>
+            -- stage A : adders ONLY. crop_x0/crop_y0 and crop_c/crop_r are all
+            -- registered, so this is a single 12b add per axis and nothing else.
+            px_sum_reg <= crop_x0 + signed(resize(crop_c, crop_x0'length));
+            py_sum_reg <= crop_y0 + signed(resize(crop_r, crop_y0'length));
+            crop_state <= XC_PREP1A;
+          when XC_PREP1A =>
+            -- stage B : bounds compare and the row multiply, both fed from the
+            -- registered sums. These two now run in PARALLEL off a flop instead
+            -- of in series behind the adders.
+            px_i := to_integer(px_sum_reg);
+            py_i := to_integer(py_sum_reg);
+            inb  := (px_i >= 0) and (px_i <= IMG_DIM - 1) and
+                    (py_i >= 0) and (py_i <= IMG_DIM - 1);
+            if py_i >= 0 then
+              w_mult_reg <= to_unsigned(py_i * (IMG_DIM / WORDS_PER_STREAM), 16);
+            else
+              w_mult_reg <= (others => '0');   -- OOB row; address killed by inb_reg
+            end if;
+            b_i_reg    <= px_i mod WORDS_PER_STREAM;   -- VHDL mod is non-negative
+            px_i_reg   <= px_i;
+            if inb then
+              inb_reg  <= '1';
+            else
+              inb_reg  <= '0';
+            end if;
+            crop_state <= XC_PREP1B;
           when XC_PREP1B =>
               if px_i_reg >= 0 then
                 w_i_reg <= resize(w_mult_reg + to_unsigned(px_i_reg / WORDS_PER_STREAM, FB_AWORD), FB_AWORD);
@@ -1361,7 +1462,7 @@ begin
   overlay_sel <= '1' when (ovl_armed = '1' and cur_idx >= to_unsigned(OVERLAY_START, FB_AWORD) and cur_idx < to_unsigned(OVERLAY_START + OVERLAY_WORDS, FB_AWORD)) else '0';
   gaus_ovl_sel <= '1' when (gaus_armed = '1' and cur_idx >= to_unsigned(GAUS_OVL_START, FB_AWORD) and cur_idx < to_unsigned(GAUS_OVL_START + NUM_DET, FB_AWORD)) else '0';
 
-  m_axis_tdata <= gaus_word when gaus_ovl_sel = '1' else res_rd_data when overlay_sel = '1' else s_axis_tdata;
+  m_axis_tdata <= gaus_word when gaus_ovl_sel = '1' else res_rd_data when overlay_sel = '1' else s_axis_tdata_i;
 
   -- Metadata passthrough
   m_mdata_StreamId                                  <= s_mdata_StreamId;

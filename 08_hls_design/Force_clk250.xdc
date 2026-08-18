@@ -9,7 +9,7 @@
 #set_clock_uncertainty -setup 0.429 [get_clocks clk250]
 
 
-set_clock_uncertainty -setup -from [get_clocks clk250] -to [get_clocks clk250] 0.429
+#set_clock_uncertainty -setup -from [get_clocks clk250] -to [get_clocks clk250] 0.429
 
 ####################################################################################
 # Constraints from file : 'xpm_cdc_async_rst.tcl'
