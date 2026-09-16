@@ -44,7 +44,8 @@ ends before HLS conversion and labels the execution **partial**. HLS conversion,
 C++ compilation and inference are attempted by default. On macOS, the generated
 hls4ml headers require GNU C++ (Apple Clang reports ambiguous `std::complex`
 specializations). Install GCC and put its versioned `g++` behind a `g++` alias in
-a run-local directory on PATH; the selected compiler path/version is recorded. Synthesis remains the
+a run-local directory on PATH; use the system linker rather than an older Conda
+linker. Compiler/linker paths, binary hashes and versions are recorded. Synthesis remains the
 original notebook's commented-out, user-controlled build step.
 
 The real workflows require the original experimental files:

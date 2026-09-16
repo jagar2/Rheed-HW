@@ -46,10 +46,14 @@ def setup(notebook: str):
     )
     context = {"profile": os.getenv("RHEED_PROFILE", "full"),
                "parameters": {k: v for k, v in os.environ.items() if k.startswith("RHEED_")}}
-    compiler = shutil.which("g++")
-    if compiler:
-        version = subprocess.run([compiler, "--version"], capture_output=True, text=True, timeout=10)
-        context["compiler"] = {"path": compiler, "version": version.stdout, "exit_code": version.returncode}
+    context["toolchain"] = {}
+    for tool, version_arg in [("g++", "--version"), ("ld", "-v")]:
+        executable = shutil.which(tool)
+        if executable:
+            version = subprocess.run([executable, version_arg], capture_output=True, text=True, timeout=10)
+            context["toolchain"][tool] = {"path": executable, "resolved_path": str(Path(executable).resolve()),
+                "sha256": hashlib.sha256(Path(executable).read_bytes()).hexdigest(),
+                "version": version.stdout + version.stderr, "exit_code": version.returncode}
     tracker.record_cell(source="# Explicit execution settings", assigned_names=["execution_settings"],
                         user_ns={"execution_settings": context})
     for name in ("pyproject.toml", "uv.lock", "requirements-dataerai.txt", "requirements-rheed-run.txt", "rheed_runtime.py", "dataerai_notebook.py", "dataerai_console_api.py"):
