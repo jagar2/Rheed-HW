@@ -26,10 +26,10 @@ def main():
     nb = nbformat.v4.new_notebook()
     nb.cells = [
         nbformat.v4.new_markdown_cell(f'# RHEED {args.stage}\nThis records the supplied command; no hardware access occurs unless that command requests it.'),
-        nbformat.v4.new_code_cell(f'from pathlib import Path\nimport os\nos.environ["RHEED_DATA_MODE"] = {data_mode!r}\nfrom rheed_runtime import setup, capture_directory\nfrom hardware_runtime import run_tool, source_manifest\ndataerai = setup({str(path)!r})', metadata={'tags':['dataerai-setup']}),
+        nbformat.v4.new_code_cell(f'from pathlib import Path\nimport os\nos.environ["RHEED_DATA_MODE"] = {data_mode!r}\nfrom rheed_runtime import setup, capture_directory\nfrom hardware_runtime import run_tool, source_manifest, capture_outputs\ndataerai = setup({str(path)!r})', metadata={'tags':['dataerai-setup']}),
         nbformat.v4.new_code_cell('%%dataerai\nsource_inventory = source_manifest(Path.cwd())'),
         nbformat.v4.new_code_cell(f'%%dataerai\nfor input_path in {args.input!r}:\n    dataerai.capture_file(input_path, role="source", relationship="uses_dependency")'),
-        nbformat.v4.new_code_cell(f'%%dataerai\nstage = {args.stage!r}\ntool_result = run_tool({command!r}, Path.cwd(), timeout={args.timeout})\nprint(tool_result)\nfor output_path in {args.output!r}:\n    p = Path(output_path)\n    if p.is_dir():\n        capture_directory(dataerai, p, role={output_role!r})\n    elif p.is_file():\n        dataerai.capture_file(p, role={output_role!r})\nassert tool_result["status"] == "succeeded", tool_result'),
+        nbformat.v4.new_code_cell(f'%%dataerai\nstage = {args.stage!r}\ntool_result = run_tool({command!r}, Path.cwd(), timeout={args.timeout})\nprint(tool_result)\ncapture_outputs(dataerai, {args.output!r}, role={output_role!r})\nassert tool_result["status"] == "succeeded", tool_result'),
         nbformat.v4.new_code_cell('dataerai.finish()', metadata={'tags':['dataerai-finish']}),
     ]
     nbformat.write(nb, path)

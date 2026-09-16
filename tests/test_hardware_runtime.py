@@ -29,3 +29,19 @@ def test_upstream_nms_rtl(tmp_path):
     assert result['exit_code'] == 0, result
     assert 'PASS: NMS' in result['stdout']
     assert (tmp_path/'nms-waveform.vcd').stat().st_size > 0
+
+
+def test_timed_out_command_retains_partial_streams(tmp_path):
+    import sys
+    from hardware_runtime import run_tool
+    result=run_tool([sys.executable,'-u','-c',"import time,sys;print('partial acquisition');print('device waiting',file=sys.stderr);time.sleep(10)"],tmp_path,timeout=0.5)
+    assert result['status']=='timed_out'
+    assert result['stdout']=='partial acquisition\n'
+    assert result['stderr']=='device waiting\n'
+
+
+def test_requested_missing_output_fails_capture(tmp_path):
+    import pytest
+    from hardware_runtime import capture_outputs
+    with pytest.raises(FileNotFoundError):
+        capture_outputs(None,[str(tmp_path/'missing.bit')],role='firmware')
