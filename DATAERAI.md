@@ -132,3 +132,11 @@ access. Hardware CI compiles and runs the original RTL testbench. Live Dataerai 
 training/HLS evidence is separate from unit-test evidence and is reported in the PR.
 No existing scientific algorithms, RTL, firmware or upstream dependency lockfile are
 changed. Remove the additive setup/wrappers to roll back; stored runs remain inspectable.
+
+## Recorded validation
+
+See [dataerai-validation.json](docs/dataerai-validation.json) for the saved run IDs,
+source commits, CI result and downloaded-artifact hashes from 2026-09-16.
+Download saved artifacts through the Dataerai Console. On consolidated storage,
+the pinned beta SDK may use an obsolete object prefix; the Console and authorized
+`files[].download_url` returned by transfer initiation resolve the stored bytes.
