@@ -58,11 +58,20 @@ def main():
                     "unexecuted_code_cells": [i for i, c in enumerate(nb.cells) if c.cell_type == "code" and c.execution_count is None]}
                 nbformat.write(nb, output)
                 cleanup = nbformat.v4.new_code_cell(
-                    "if 'dataerai' in globals():\n"
-                    f"    dataerai.capture_file({str(output)!r}, role='executed_notebook')\n"
-                    f"    dataerai.finish(status={nb.metadata['dataerai_execution']['status']!r})\n"
-                    "    import json\n"
-                    f"    Path({str(output_dir / 'receipt.json')!r}).write_text(json.dumps({{'run_id': dataerai.run_id, 'run_asset_id': dataerai.run_asset_id, 'summary_asset_id': dataerai.summary_asset_id, 'run_dir': str(dataerai.run_dir), 'cell_count': dataerai.cell_count, 'asset_count': dataerai.asset_count, 'relationship_count': dataerai.relationship_count}}))\n"
+                    "from pathlib import Path\nimport json\n"
+                    "_tracker = globals().get('_dataerai_active_tracker') or globals().get('dataerai')\n"
+                    "if _tracker is not None:\n"
+                    f"    _status = {nb.metadata['dataerai_execution']['status']!r}\n"
+                    "    try:\n"
+                    f"        _tracker.capture_file({str(output)!r}, role='executed_notebook')\n"
+                    "    except BaseException:\n"
+                    "        _status = 'failed'\n"
+                    "        raise\n"
+                    "    finally:\n"
+                    "        try:\n"
+                    "            _tracker.finish(status=_status)\n"
+                    "        finally:\n"
+                    f"            Path({str(output_dir / 'receipt.json')!r}).write_text(json.dumps({{'run_id': _tracker.run_id, 'run_asset_id': _tracker.run_asset_id, 'summary_asset_id': _tracker.summary_asset_id, 'run_dir': str(_tracker.run_dir), 'cell_count': _tracker.cell_count, 'asset_count': _tracker.asset_count, 'relationship_count': _tracker.relationship_count}}))\n"
                 )
                 nb.cells.append(cleanup)
                 try:

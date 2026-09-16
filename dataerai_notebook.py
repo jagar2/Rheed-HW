@@ -70,7 +70,7 @@ _TITLE_MAX_LENGTH = 255
 _MANAGED_PROJECT_NAME = "RHEED notebook records"
 _FIGURE_FORMATS = {"png", "jpg", "jpeg", "svg"}
 _TRANSIENT_DATAERAI_ERROR = re.compile(
-    r"HTTP (?:429|502|503|504)\b|"
+    r"HTTP (?:429|500|502|503|504)\b|An internal error occurred\. Please retry the transfer\.|"
     r"timed out|did not complete within|connection (?:was )?closed|database is locked|SQLITE_BUSY",
     re.IGNORECASE,
 )
@@ -662,6 +662,10 @@ class NotebookProvenance:
             metadata=self._run_metadata,
             tags=self._tags("notebook_run", "asset-type:experiment-run"),
         )
+        # Expose the run before dependency uploads so runner cleanup can finalize
+        # a setup failure even when the caller assignment never completes.
+        self.running = True
+        self.shell.user_ns["_dataerai_active_tracker"] = self
         self._link(
             self.run_asset_id,
             self.notebook_asset_id,

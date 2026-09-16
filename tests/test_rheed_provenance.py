@@ -124,3 +124,32 @@ def test_file_created_inside_cell_links_to_that_cell_not_previous(tmp_path):
     edges=[(a,b,k['relationship_type']) for a,b,k in client.relationships if a==asset_id]
     assert (asset_id,current,'generated_by') in edges
     assert (asset_id,previous,'generated_by') not in edges
+
+
+def test_retry_recognizes_explicit_retryable_transfer_error(monkeypatch):
+    import dataerai_notebook as module
+    monkeypatch.setattr(module.time, 'sleep', lambda _: None)
+    attempts = []
+    def upload():
+        attempts.append(1)
+        if len(attempts) == 1:
+            raise RuntimeError('An internal error occurred. Please retry the transfer.')
+        return 'saved'
+    assert module._retry_transient(upload) == 'saved'
+    assert len(attempts) == 2
+
+
+def test_started_run_remains_accessible_when_dependency_capture_fails(tmp_path, monkeypatch):
+    from dataerai_notebook import NotebookProvenance
+    from tests.helpers import FakeClient, FakeShell
+    path=tmp_path/'setup.ipynb'
+    path.write_text('{"cells": [], "metadata": {}}')
+    shell=FakeShell()
+    tracker=NotebookProvenance(path,client=FakeClient(),shell=shell)
+    def fail(self): raise RuntimeError('dependency upload unavailable')
+    monkeypatch.setattr(NotebookProvenance, '_capture_dependencies', fail)
+    with pytest.raises(RuntimeError, match='dependency upload unavailable'):
+        tracker.start()
+    assert shell.user_ns['_dataerai_active_tracker'] is tracker
+    tracker.finish(status='failed')
+    assert json.loads((tracker.run_dir/'run-summary.json').read_text())['run_summary']['status'] == 'failed'
