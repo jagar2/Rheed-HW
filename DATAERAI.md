@@ -18,8 +18,24 @@ dataerai auth login --server https://beta.dataerai.com
 # Or: dataerai auth login --device --client-id dataerai-mobile --server https://beta.dataerai.com
 export DATAERAI_OWNER_TYPE=project
 export DATAERAI_OWNER_ID=<project-uuid>
-export DATAERAI_COLLECTION_ID=<collection-uuid>
 ```
+
+By default, each notebook uses its own collection named
+`<repository> · <notebook>`, such as `Rheed-HW · Hardware_Provenance`. An exact
+name is reused on later runs. Add a prefix or postfix to route another run of
+the same notebook into a different collection:
+
+```sh
+python run_dataerai.py Hardware_Provenance.ipynb \
+  --collection-prefix "September batch" --collection-postfix "rerun 2"
+```
+
+The equivalent environment variables are `DATAERAI_COLLECTION_PREFIX` and
+`DATAERAI_COLLECTION_POSTFIX`; `DATAERAI_COLLECTION_SUFFIX` is accepted as an
+alias. `DATAERAI_COLLECTION_ID=<collection-uuid>` remains an explicit override
+and bypasses automatic notebook collection resolution. The resolved collection
+ID, title, routing mode, prefix and postfix are retained in every record.
+
 
 The destination is sealed at run start. All records use the selected owner and
 collection. Credentials remain in the CLI credential store; environment variables
@@ -116,6 +132,8 @@ the lab's Vivado/Vitis installation, licensed Euresys IP and connected hardware.
 `run_hardware.py` wraps a supplied simulation/synthesis/implementation/acquisition
 command, recording exact arguments, status, streams, elapsed time, selected input
 files and output files/directories. Specify `--input` and `--output` repeatedly.
+It accepts the same `--collection-prefix` and `--collection-postfix` routing
+controls as `run_dataerai.py`.
 Requested outputs must exist; missing files fail the run. Timed-out commands retain
 partial stdout/stderr. Source-controlled hardware is never reprogrammed merely by
 importing the integration.

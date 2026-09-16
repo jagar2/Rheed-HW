@@ -3,6 +3,7 @@ import shutil
 import sys
 import pytest
 from hardware_runtime import run_tool
+from run_hardware import runner_command
 
 
 def test_nonzero_tool_status_preserves_stderr(tmp_path):
@@ -45,3 +46,16 @@ def test_requested_missing_output_fails_capture(tmp_path):
     from hardware_runtime import capture_outputs
     with pytest.raises(FileNotFoundError):
         capture_outputs(None,[str(tmp_path/'missing.bit')],role='firmware')
+
+
+def test_hardware_wrapper_forwards_collection_affixes(tmp_path):
+    args = type('Args', (), {
+        'timeout': 60,
+        'collection_prefix': 'September batch',
+        'collection_postfix': 'rerun 2',
+    })()
+    command = runner_command(tmp_path, tmp_path / 'request.ipynb', args)
+    assert command[-4:] == [
+        '--collection-prefix', 'September batch',
+        '--collection-postfix', 'rerun 2',
+    ]

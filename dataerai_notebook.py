@@ -298,11 +298,14 @@ class NotebookProvenance:
         owner_type: str = "auto",
         owner_id: str | None = None,
         collection_id: str | None = None,
+        collection_prefix: str | None = None,
+        collection_postfix: str | None = None,
         binary_path: str | None = None,
         on_error: str = "fail_fast",
         spool_root: str | Path | None = None,
         client: Any | None = None,
         shell: Any | None = None,
+        console_api: Any | None = None,
     ) -> None:
         if owner_type not in {"auto", "user", "project"}:
             raise ValueError("owner_type must be 'auto', 'user', or 'project'")
@@ -316,8 +319,28 @@ class NotebookProvenance:
         self.owner_id = owner_id
         self.owner_resolution: str | None = None
         self.collection_id = collection_id
-        self._upload_destination: dict[str, str | None] | None = None
-        self._console_api: Any | None = None
+        env_postfix = os.getenv("DATAERAI_COLLECTION_POSTFIX")
+        env_suffix = os.getenv("DATAERAI_COLLECTION_SUFFIX")
+        if env_postfix and env_suffix and env_postfix != env_suffix:
+            raise ValueError(
+                "DATAERAI_COLLECTION_POSTFIX and DATAERAI_COLLECTION_SUFFIX conflict"
+            )
+        self.collection_prefix = self._validate_collection_affix(
+            collection_prefix
+            if collection_prefix is not None
+            else os.getenv("DATAERAI_COLLECTION_PREFIX"),
+            field_name="collection prefix",
+        )
+        self.collection_postfix = self._validate_collection_affix(
+            collection_postfix
+            if collection_postfix is not None
+            else env_postfix or env_suffix,
+            field_name="collection postfix",
+        )
+        self.collection_title: str | None = None
+        self.collection_resolution: str | None = None
+        self._upload_destination: dict[str, Any] | None = None
+        self._console_api: Any | None = console_api
         self.binary_path = binary_path
         self.on_error = on_error
         self.client = client
@@ -348,6 +371,19 @@ class NotebookProvenance:
         self.asset_index = []
         self._run_metadata: dict[str, Any] = {}
         self._latest_role_asset: dict[str, str] = {}
+
+    @staticmethod
+    def _validate_collection_affix(value: str | None, *, field_name: str) -> str:
+        if value is None:
+            return ""
+        cleaned = " ".join(value.split())
+        if not cleaned or len(cleaned) > 80 or any(
+            character in value for character in ("/", "\\", "\x00")
+        ):
+            raise ValueError(
+                f"{field_name} must contain 1-80 printable characters without slashes"
+            )
+        return cleaned
 
     @staticmethod
     def _find_repo_root(start: Path) -> Path:
@@ -545,6 +581,60 @@ class NotebookProvenance:
         self.owner_type = "project"
         self.owner_id = self._managed_project_id(auth.user_email)
 
+    def _resolve_notebook_collection(self) -> None:
+        """Route each notebook to a stable collection selected by optional affixes."""
+        if self.collection_id is not None:
+            self.collection_id = _uuid_text(
+                self.collection_id,
+                field_name="DATAERAI_COLLECTION_ID",
+            )
+            self.collection_resolution = "explicit"
+            return
+        if self.owner_id is None:
+            raise RuntimeError("The notebook upload owner has not been resolved")
+        if self._console_api is None:
+            from dataerai_console_api import DataeraiConsoleAPI
+
+            self._console_api = DataeraiConsoleAPI()
+        title_parts = [
+            self.collection_prefix,
+            self.repo_root.name,
+            self.notebook_path.stem,
+            self.collection_postfix,
+        ]
+        title = " · ".join(part for part in title_parts if part)
+        if len(title) > 255:
+            raise ValueError("resolved notebook collection title exceeds 255 characters")
+        collection = self._console_api.get_or_create_notebook_collection(
+            owner_type=self.owner_type,
+            owner_id=self.owner_id,
+            title=title,
+            description=(
+                f"Dataerai provenance records for {self.repo_root.name}/"
+                f"{self.notebook_relative_path}."
+            ),
+            tags=[
+                "rheed",
+                "notebook-runs",
+                f"repository:{_slug(self.repo_root.name).replace('_', '-')}",
+                f"notebook:{_slug(self.notebook_path.stem).replace('_', '-')}",
+            ],
+        )
+        self.collection_id = _uuid_text(
+            collection.get("id"), field_name="resolved collection id"
+        )
+        # Personal collection creates may be routed into the user's default project.
+        original_owner = (self.owner_type, self.owner_id)
+        self.owner_type = str(collection.get("owner_type") or self.owner_type)
+        self.owner_id = _uuid_text(
+            collection.get("owner_id") or self.owner_id,
+            field_name="resolved collection owner id",
+        )
+        self.collection_title = str(collection.get("title") or title)
+        self.collection_resolution = "notebook_collection_created_or_reused"
+        if (self.owner_type, self.owner_id) != original_owner:
+            self.owner_resolution = "collection_owner_routed"
+
     def start(self) -> "NotebookProvenance":
         if self.running:
             return self
@@ -596,17 +686,17 @@ class NotebookProvenance:
             )
         auth = self.client.auth_status()
         self._resolve_owner(auth)
-        if self.collection_id is not None:
-            self.collection_id = _uuid_text(
-                self.collection_id,
-                field_name="DATAERAI_COLLECTION_ID",
-            )
+        self._resolve_notebook_collection()
         if self.owner_id is None:  # Defensive: _resolve_owner() must set this.
             raise RuntimeError("The notebook upload owner has not been resolved")
         self._upload_destination = {
             "owner_type": self.owner_type,
             "owner_id": self.owner_id,
             "collection_id": self.collection_id,
+            "collection_title": self.collection_title,
+            "collection_resolution": self.collection_resolution,
+            "collection_prefix": self.collection_prefix,
+            "collection_postfix": self.collection_postfix,
         }
 
         notebook_metadata = self._origin_metadata("notebook_source")

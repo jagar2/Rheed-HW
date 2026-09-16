@@ -160,24 +160,68 @@ class DataeraiConsoleAPI:
     def create_collection(
         self,
         *,
-        project_id: str,
-        parent_id: str,
+        owner_type: str,
+        owner_id: str,
+        title: str,
+        description: str,
+        tags: list[str],
+        parent_id: str | None = None,
+    ) -> dict[str, Any]:
+        payload = {
+            "title": title,
+            "description": description,
+            "tags": tags,
+            "type": ["notebook-run"],
+            "owner_type": owner_type,
+            "owner_id": owner_id,
+        }
+        if parent_id:
+            payload["parent_id"] = parent_id
+        return self._normalize_collection_owner(self._request(
+            "POST",
+            "/api/collections/",
+            payload=payload,
+        ))
+
+    @staticmethod
+    def _normalize_collection_owner(collection: dict[str, Any]) -> dict[str, Any]:
+        """Expose the owner pair used by uploads from Console serializer fields."""
+        normalized = dict(collection)
+        if collection.get("owner_project_id"):
+            normalized["owner_type"] = "project"
+            normalized["owner_id"] = str(collection["owner_project_id"])
+        elif collection.get("owner_user_id"):
+            normalized["owner_type"] = "user"
+            normalized["owner_id"] = str(collection["owner_user_id"])
+        return normalized
+
+    def get_or_create_notebook_collection(
+        self,
+        *,
+        owner_type: str,
+        owner_id: str,
         title: str,
         description: str,
         tags: list[str],
     ) -> dict[str, Any]:
-        return self._request(
-            "POST",
+        """Reuse the exact notebook collection, or create it under the owner root."""
+        response = self._request(
+            "GET",
             "/api/collections/",
-            payload={
-                "title": title,
-                "description": description,
-                "tags": tags,
-                "type": ["notebook-run"],
-                "owner_type": "project",
-                "owner_id": project_id,
-                "parent_id": parent_id,
-            },
+            query={"owner_type": owner_type, "owner_id": owner_id, "q": title},
+        )
+        items = response.get("results", []) if isinstance(response, dict) else response
+        exact = [item for item in (items or []) if item.get("title") == title]
+        if exact:
+            return self._normalize_collection_owner(
+                min(exact, key=lambda item: item.get("created_at", ""))
+            )
+        return self.create_collection(
+            owner_type=owner_type,
+            owner_id=owner_id,
+            title=title,
+            description=description,
+            tags=tags,
         )
 
     def ensure_upload_complete(self, asset_id: str, content_id: str, transfer_id: str) -> None:

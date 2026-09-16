@@ -42,6 +42,12 @@ def setup(notebook: str):
         owner_type=os.getenv("DATAERAI_OWNER_TYPE", "auto"),
         owner_id=os.getenv("DATAERAI_OWNER_ID") or None,
         collection_id=os.getenv("DATAERAI_COLLECTION_ID") or None,
+        collection_prefix=os.getenv("DATAERAI_COLLECTION_PREFIX") or None,
+        collection_postfix=(
+            os.getenv("DATAERAI_COLLECTION_POSTFIX")
+            or os.getenv("DATAERAI_COLLECTION_SUFFIX")
+            or None
+        ),
         binary_path=os.getenv("DATAERAI_BINARY") or None,
     )
     context = {"profile": os.getenv("RHEED_PROFILE", "full"),

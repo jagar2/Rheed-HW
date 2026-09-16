@@ -76,6 +76,20 @@ class FakeClient:
         self.closed = True
 
 
+class FakeConsoleAPI:
+    def __init__(self) -> None:
+        self.collection_requests = []
+
+    def get_or_create_notebook_collection(self, **kwargs):
+        self.collection_requests.append(kwargs)
+        return {
+            "id": COLLECTION_ID,
+            "title": kwargs["title"],
+            "owner_type": "project",
+            "owner_id": PROJECT_ID,
+        }
+
+
 def make_tracker(tmp_path: Path, **tracker_kwargs):
     repo = tmp_path / "repo"
     repo.mkdir()
@@ -84,13 +98,14 @@ def make_tracker(tmp_path: Path, **tracker_kwargs):
     notebook.write_text('{"cells": [], "metadata": {}}', encoding="utf-8")
     client = FakeClient()
     shell = FakeShell()
+    console_api = tracker_kwargs.pop("console_api", FakeConsoleAPI())
     tracker = NotebookProvenance(
         notebook,
         client=client,
         shell=shell,
+        console_api=console_api,
         spool_root=repo / ".dataerai" / "runs",
         **tracker_kwargs,
     ).start()
     return tracker, client, shell
-
 

@@ -7,12 +7,33 @@ import uuid
 import nbformat
 
 
+def runner_command(root: Path, notebook: Path, args) -> list[str]:
+    command = [
+        sys.executable,
+        str(root / 'run_dataerai.py'),
+        str(notebook),
+        '--workdir',
+        str(root),
+        '--timeout',
+        str(args.timeout + 300),
+    ]
+    if args.collection_prefix is not None:
+        command.extend(['--collection-prefix', args.collection_prefix])
+    if args.collection_postfix is not None:
+        command.extend(['--collection-postfix', args.collection_postfix])
+    return command
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--stage', choices=['simulation','synthesis','implementation','acquisition'], required=True)
     parser.add_argument('--input', action='append', default=[])
     parser.add_argument('--output', action='append', default=[])
     parser.add_argument('--timeout', type=int, default=3600)
+    parser.add_argument('--collection-prefix')
+    parser.add_argument(
+        '--collection-postfix', '--collection-suffix', dest='collection_postfix'
+    )
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
@@ -35,7 +56,7 @@ def main():
     nbformat.write(nb, path)
     # Kernel working directory remains the repository, while the immutable source
     # notebook is retained under .dataerai/requests.
-    return subprocess.call([sys.executable, str(root/'run_dataerai.py'), str(path), '--workdir', str(root), '--timeout', str(args.timeout+300)], cwd=root)
+    return subprocess.call(runner_command(root, path, args), cwd=root)
 
 
 if __name__ == '__main__':

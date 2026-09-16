@@ -45,3 +45,28 @@ def test_archive_retains_paths_bytes_and_checksums(tmp_path):
         assert z.read('nested/model.bin') == b'\x01\x02\x03'
         manifest=json.loads(z.read('dataerai-file-manifest.json'))
         assert manifest[0]['sha256'] == hashlib.sha256(b'\x01\x02\x03').hexdigest()
+
+
+def test_runner_accepts_collection_prefix_and_postfix(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    path = tmp_path / 'collection-routing.ipynb'
+    nb = nbformat.v4.new_notebook()
+    nb.cells = [nbformat.v4.new_code_cell(
+        'import os\nfrom pathlib import Path\n'
+        'Path("collection-routing.json").write_text(__import__("json").dumps({'
+        '"prefix": os.environ.get("DATAERAI_COLLECTION_PREFIX"), '
+        '"postfix": os.environ.get("DATAERAI_COLLECTION_POSTFIX")}))'
+    )]
+    nbformat.write(nb, path)
+
+    result = subprocess.run([
+        sys.executable, str(root / 'run_dataerai.py'), str(path),
+        '--collection-prefix', 'September batch',
+        '--collection-postfix', 'rerun 2',
+        '--timeout', '60',
+    ], cwd=tmp_path, capture_output=True, text=True)
+
+    assert result.returncode == 0, result.stderr
+    assert json.loads((tmp_path / 'collection-routing.json').read_text()) == {
+        'prefix': 'September batch', 'postfix': 'rerun 2'
+    }

@@ -19,10 +19,18 @@ def main():
     parser.add_argument("--profile", choices=["full", "smoke"], default="full")
     parser.add_argument("--through", choices=["training", "hls"], default="hls")
     parser.add_argument("--timeout", type=int, default=3600)
+    parser.add_argument("--collection-prefix")
+    parser.add_argument(
+        "--collection-postfix", "--collection-suffix", dest="collection_postfix"
+    )
     args = parser.parse_args()
     notebook_path = args.notebook.resolve()
     os.environ["RHEED_PROFILE"] = args.profile
     os.environ["RHEED_THROUGH"] = args.through
+    if args.collection_prefix is not None:
+        os.environ["DATAERAI_COLLECTION_PREFIX"] = args.collection_prefix
+    if args.collection_postfix is not None:
+        os.environ["DATAERAI_COLLECTION_POSTFIX"] = args.collection_postfix
     if args.profile == "smoke":
         for key, value in {"TRAINING_DATASET_SIZE": 8, "VALIDATION_DATASET_SIZE": 4,
                            "TEST_DATASET_SIZE": 4, "BATCH_SIZE": 4, "NUM_EPOCHS": 1}.items():

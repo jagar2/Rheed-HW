@@ -91,7 +91,13 @@ def test_raw_execution_evidence_survives_upload_failure(tmp_path):
 def test_run_ids_and_titles_distinguish_repeated_executions(tmp_path):
     tracker, client, shell = make_tracker(tmp_path)
     from dataerai_notebook import NotebookProvenance
-    again = NotebookProvenance(tracker.notebook_path, client=client, shell=shell).start()
+    from tests.helpers import FakeConsoleAPI
+    again = NotebookProvenance(
+        tracker.notebook_path,
+        client=client,
+        shell=shell,
+        console_api=FakeConsoleAPI(),
+    ).start()
     assert tracker.run_id != again.run_id
     runs = [x for x in client.uploads if x["kwargs"]["metadata"]["record_kind"] == "notebook_run"]
     assert runs[0]["kwargs"]["title"] != runs[1]["kwargs"]["title"]
@@ -141,11 +147,13 @@ def test_retry_recognizes_explicit_retryable_transfer_error(monkeypatch):
 
 def test_started_run_remains_accessible_when_dependency_capture_fails(tmp_path, monkeypatch):
     from dataerai_notebook import NotebookProvenance
-    from tests.helpers import FakeClient, FakeShell
+    from tests.helpers import FakeClient, FakeConsoleAPI, FakeShell
     path=tmp_path/'setup.ipynb'
     path.write_text('{"cells": [], "metadata": {}}')
     shell=FakeShell()
-    tracker=NotebookProvenance(path,client=FakeClient(),shell=shell)
+    tracker=NotebookProvenance(
+        path, client=FakeClient(), shell=shell, console_api=FakeConsoleAPI()
+    )
     def fail(self): raise RuntimeError('dependency upload unavailable')
     monkeypatch.setattr(NotebookProvenance, '_capture_dependencies', fail)
     with pytest.raises(RuntimeError, match='dependency upload unavailable'):

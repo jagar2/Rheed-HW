@@ -29,6 +29,8 @@ Code review and maintainer approval remain required before merge.
 |---|---|
 | All scientific cells tracked | notebook coverage test; full source notebook artifact |
 | Correct destination and separate runs | sealed destination and distinct identity tests |
+| One collection per notebook | automatic exact-name collection routing test |
+| Same notebook can use another collection | prefix/postfix and runner CLI contract tests |
 | Lossless arrays and model weights | NPZ roundtrip and callable-model tests |
 | Error remains error | failed-cell, capture-error and real-kernel cleanup tests |
 | Source/code/streams preserved | cell-execution JSON and executed notebook |
