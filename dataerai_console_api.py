@@ -180,6 +180,28 @@ class DataeraiConsoleAPI:
             },
         )
 
+    def ensure_upload_complete(self, asset_id: str, content_id: str, transfer_id: str) -> None:
+        """Verify the uploaded version is available, including beta daemon finalization.
+
+        Use the normal completion endpoint so server permissions, byte verification,
+        quotas and scanning apply. Never change content status directly.
+        """
+        path = f"/api/assets/{asset_id}/"
+        content = (self._request("GET", path).get("current_content") or {})
+        if content.get("id") != content_id:
+            raise DataeraiConsoleError(f"Upload {asset_id}: current content version differs from uploaded version")
+        if content.get("status") == "uploading":
+            try:
+                self._request("POST", f"/api/transfers/{transfer_id}/complete/", payload={})
+            except DataeraiConsoleError as exc:
+                # A concurrent completion may win; accept only a verified available
+                # version on the following read, never the conflict by itself.
+                if "HTTP 409:" not in str(exc):
+                    raise
+            content = (self._request("GET", path).get("current_content") or {})
+        if content.get("id") != content_id or content.get("status") != "available":
+            raise DataeraiConsoleError(f"Upload {asset_id}: content is not available ({content.get('status')})")
+
     def set_record_type(self, asset_id: str, record_type: str) -> None:
         self._request(
             "PATCH",

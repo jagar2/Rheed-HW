@@ -1002,6 +1002,12 @@ class NotebookProvenance:
                 raise
 
         result = _retry_transient(upload_once)
+        if getattr(result, "transfer_id", None) and getattr(result, "content_id", None):
+            if self._console_api is None:
+                from dataerai_console_api import DataeraiConsoleAPI
+                self._console_api = DataeraiConsoleAPI()
+            _retry_transient(lambda: self._console_api.ensure_upload_complete(
+                result.asset_id, result.content_id, result.transfer_id))
         _retry_transient(
             lambda: self._set_asset_record_type(result.asset_id, record_type)
         )
