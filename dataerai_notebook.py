@@ -342,6 +342,8 @@ class NotebookProvenance:
         self.relationship_count = 0
         self.errors: list[dict[str, Any]] = []
         self.running = False
+        self._executing_cell = False
+        self._pending_file_assets = []
         self.execution_errors = []
         self.asset_index = []
         self._run_metadata: dict[str, Any] = {}
@@ -1116,6 +1118,7 @@ class NotebookProvenance:
         if not self.running:
             raise RuntimeError("Dataerai provenance is not active for this notebook")
 
+        self._executing_cell = True
         started_at = _utc_now()
         monotonic_start = time.monotonic()
         stdout_tee = _Tee(sys.stdout)
@@ -1209,6 +1212,8 @@ class NotebookProvenance:
                 RuntimeWarning,
                 stacklevel=2,
             )
+        finally:
+            self._executing_cell = False
         if direct_error is not None:
             raise direct_error.with_traceback(direct_traceback)
         if error is not None:
@@ -1520,6 +1525,9 @@ class NotebookProvenance:
         ):
             self._link_semantic_provenance(artifact)
 
+        for asset_id, relationship in self._pending_file_assets:
+            self._link(asset_id, cell_asset_id, relationship, qualifiers={"cell_sequence": sequence})
+        self._pending_file_assets.clear()
         self.last_cell_asset_id = cell_asset_id
         self.cell_count = sequence
         return cell_asset_id
@@ -1759,8 +1767,11 @@ class NotebookProvenance:
                                 tags=self._tags("file_artifact", role))
         if relationship == "uses_dependency":
             self._link(self.run_asset_id, asset_id, relationship, qualifiers={"sha256": digest})
+        elif self._executing_cell:
+            self._link(asset_id, self.run_asset_id, "part_of_run", qualifiers={"run_id": self.run_id})
+            self._pending_file_assets.append((asset_id, relationship))
         else:
-            self._link(asset_id, self.last_cell_asset_id or self.run_asset_id, relationship,
+            self._link(asset_id, self.run_asset_id, relationship,
                        qualifiers={"run_id": self.run_id, "sha256": digest})
         return asset_id
 

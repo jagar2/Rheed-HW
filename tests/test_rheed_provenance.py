@@ -111,3 +111,16 @@ def test_explicit_failure_wins_over_capture_error_status(tmp_path):
     tracker.errors.append({'message':'capture failed'})
     tracker.finish(status='failed')
     assert client.metadata_updates[-1][1]['metadata']['completion']['status'] == 'failed'
+
+
+def test_file_created_inside_cell_links_to_that_cell_not_previous(tmp_path):
+    tracker, client, _ = make_tracker(tmp_path)
+    previous = tracker.record_cell(source='previous = 1')
+    tracker._executing_cell = True
+    path = tmp_path/'export.zip'
+    path.write_bytes(b'generated code')
+    asset_id = tracker.capture_file(path)
+    current = tracker.record_cell(source='export_model()')
+    edges=[(a,b,k['relationship_type']) for a,b,k in client.relationships if a==asset_id]
+    assert (asset_id,current,'generated_by') in edges
+    assert (asset_id,previous,'generated_by') not in edges
